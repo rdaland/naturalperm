@@ -60,6 +60,14 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "primefac"
+version = "2.0.12"
+description = "Module and command-line utility for factoring integers into primes"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "py"
 version = "1.11.0"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
@@ -110,7 +118,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f06ce2756e46bdf8821747b2cb3707b69f11385d138d87e10a27286b3c6179b5"
+content-hash = "8f57d32f808fb953e130efc6458933a93ad62d90b220c01e53e780b5f5abb315"
 
 [metadata.files]
 atomicwrites = []
@@ -128,6 +136,7 @@ pluggy = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
 ]
+primefac = []
 py = [
     {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
