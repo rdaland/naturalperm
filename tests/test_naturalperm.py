@@ -5,6 +5,10 @@ from naturalperm.naturalperm import (
     binary_string_to_int,
     int_to_prime_factorization,
     prime_factorization_to_int,
+    encode_primefac_as_binary_string,
+    decode_binary_string_as_primefac,
+    natperm,
+    natperminv,
 )
 
 SOME_BIGINT = 600851475143
@@ -35,3 +39,30 @@ def test_int_to_prime_factorization():
 def test_prime_factorization_to_int():
     assert prime_factorization_to_int(BIGINT_FACTORS) == SOME_BIGINT
 
+
+def test_encode_primefac_as_binary_string():
+    assert encode_primefac_as_binary_string([]) == '0'
+    assert encode_primefac_as_binary_string([2, 2, 3]) == '1011'
+
+
+def test_decode_binary_string_as_primefac():
+    assert decode_binary_string_as_primefac('0') == []
+    assert decode_binary_string_as_primefac('1011') == [2, 2, 3]
+
+
+def test_natperm__basic():
+    assert natperm(1) == 1
+    with pytest.raises(ValueError):
+        natperm(0)
+
+
+def test_natperminv__basic():
+    assert natperminv(1) == 1
+    with pytest.raises(ValueError):
+        natperminv(0)
+
+
+def test_natperm_and_natperminv_are_inverses():
+    for i in range(1, 100):
+        assert natperminv(natperm(i)) == i
+        assert natperminv(natperm(i)) == i
