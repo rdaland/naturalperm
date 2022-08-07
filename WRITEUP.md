@@ -40,3 +40,56 @@ Of course, if the other set of mappings is chosen in a way that "too close" to `
 
 The general approach we will take here is for `penc` to encode an integer as a string of 0's and 1's in a way that represents its prime factorization. Some bookkeeping and technical details are required to ensure an invertible mapping, and these are the topic of the next section.
 
+# Prime factorization coding
+
+The general idea is to generate an invertible mapping by exploiting the prime factorization of an integer. The prime multiplicities are encoded as a sequence of '1's using stack encoding, and '0' is used as a separator. 
+
+## Stack encoding
+
+The Peano axioms define the natural numbers according to a special element '0' and the successor relation 'S'. For example, 1 is defined by a single application of the successor relation, while 2 is defined by 2 applications:
+
+```
+1: "S0"        # 1 is the successor of 0
+2: "SS0"       # 2 is the successor of 1, i.e. the successor of the successor of 0
+...
+5: "SSSSS0"    # 5 is the successor of the successor of ... the successor of 0
+```
+
+This can be thought of as the "stack-of-plates" representation of a nonnegative integer. This is closely related to what I will refer to as the stack encoding. The stack encoding of a nonnegative integer is a sequence of repeated '1's, where the integer value is encoded by the number of repeats. For example the stack encoding of 0 is the empty string, the stack encoding of 1 is "1", and the stack encoding of 5 is "11111". Observe that the stack encoding is invertible (when the integer 0 is included in the domain).
+
+## Prime factorization
+
+It is well-known that all positive integers can be expressed as the product of primes. Moreover, the prime factorization is unique, up to the order of factors. Here are a couple of examples:
+
+```
+18 = 3^2 * 2^1                            # [2,1]
+13 = 13^1 * 11^0 * 7^0 * 5^0 * 3^0 * 2^0  # [1,0,0,0,0,0]
+```
+
+The order of primes is fixed, just as is the order of powers of 2. Thus, we can invertibly encode the prime factorization of an integer by the sequece of prime multiplicities. (Just as with just as with the binary string encoding, the canonical sequence must be defined to exclude all primes above the greatest prime with a nonzero multiplicity; for example we do not include the term "17^0" in the prime factorization of 13).
+
+## `penc`: combining prime factorization with stack encoding
+
+The trick is to use stack encoding for the prime multiplicities, with '0' as the separators.
+
+The same examples from above are shown again:
+
+|----|-------------------------------------|---------------|--------|
+| 18 |                           3^2 * 2^1 |         [2,1] |   1101 |
+| 13 | 13^1 * 11^0 * 7^0 * 5^0 * 3^0 * 2^0 | [1,0,0,0,0,0] | 100000 |
+
+For the multiplicity list [2,1] in the first line:
+* the leftmost value 2 is stack-encoded with '11' (two 1's)
+* a separator of '0' follows
+* the rightmost value 1 is stack-encoded with '1'
+
+For the multiplicity list [1,0,0,0,0,0] in the second line:
+* the leftmost value 1 is stack-encoded with '1'
+* a separator of '0' follows
+* the next value 0 is stack-encoded with the empty string (0 repeats of '1')
+* a separator of '0' follows
+* the next value of 0 is also stack-encoded with the empty string
+* ...
+
+Because this value is a prime, the total number of separators is equal to the number of primes that are smaller than this value.
+
