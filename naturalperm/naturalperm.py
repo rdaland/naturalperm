@@ -1,7 +1,10 @@
 from collections import Counter
-from typing import List
-from math import prod
+from typing import List, Optional
+from math import prod, log
 from primefac import primefac, primegen
+
+REALLY_BIG_NUMBER = 1000000000
+
 
 def int_to_binary_string(n: int) -> str:
     return format(n, "b")
@@ -53,9 +56,24 @@ def natperminv(n: int) -> int:
     return prime_factorization_to_int(prime_factorization)
 
 
+def orbit(x: int, escape: int = REALLY_BIG_NUMBER, f = natperm) -> List[Optional[int]]:
+    orb = [x]
+    while orb[-1] < escape:
+        orb.append(f(orb[-1]))
+        if orb[-1] == orb[0]:
+            return orb[:-1]
+    orb.append(None)
+    return orb
+
+
 def main():
-    for i in range(1, 100):
-        print(i, natperm(i), natperminv(i))
+    for i in range(1, 1000+1):
+        orb = orbit(i, f=natperminv)
+        if orb[-1]:
+            print(f"{i}: {orb}")
+        else:
+            print(f"{i}:\tESCAPED in {len(orb) - 1} steps")
+
 
 if __name__ == '__main__':
     main()

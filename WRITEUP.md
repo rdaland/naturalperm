@@ -91,5 +91,170 @@ For the multiplicity list [1,0,0,0,0,0] in the second line:
 * the next value of 0 is also stack-encoded with the empty string
 * ...
 
-Because this value is a prime, the total number of separators is equal to the number of primes that are smaller than this value.
+Because this value is a prime, the total number of separators is equal to the number of primes that are smaller than this value, and there are no other factors; so we get a string of zeros.
 
+## `pdec`: inverting `penc`
+
+The fundamental question is, is it guaranteed that every canonical binary string can be interpreted as a `penc`-encoded integer? In other words, is it possible to recover a unique prime factorization from every canonical binary string? The short answer is, yes — because we have taken special care that every mapping discussed here is invertible. As a brief, informal argument, consider that every canonical binary string begins with a '1' and continues with some sequence of '1's and '0's. We can split the string on '0', separating it into a sequence of 1-sequences. The 1-sequences can be of length 0, and this will occur exactly whenever the binary string contains two 0's in a row. Since 0's are different than 1's, the parsing is guaranteed to be unique — one symbol is used to separate stacks, and one symbol is used to indicate the size of each stack. So from every canonical binary string, it is possible to recover some prime factorization. And since integer multiplication commutes, the resulting integer is guaranteed to be 1-1 from the prime factorization.
+
+## A detail: Off by one
+
+The prime factorization theorem holds for positive integers (n > 0). Therefore `penc`/`pdec` encode a mapping from/to the **positive** integers to canonical binary strings. 
+
+However, the `benc`/`bdec` encoding does naturally include 0 <—> '0'. The general idea is to define `naturalperm` as the composition of `benc` and `pdec` (or _vice versa_). While the mapping is still invertible if the domain includes 0 and the range does not (or _vice versa_), it will not be a permutation. Fortunately, it is easy to address this issue by adding a shift-by-one operation:
+* `benc(n)` returns the canonical binary string for `n - 1`
+* `bdec(s)` converts s to an integer, and then adds 1 to it
+
+A similar effect could have been achieved with a shift-by-one operation in `penc`/`pdec`. I opted to do it in `benc`/`bdec` since this generally introduces a smaller perturbation to the binary string representation.
+
+## Another detail: smallest values rightmost
+
+In English, the convention is to render strings left-to-right, and to order binary strings so that the most significant bit is leftmost. I have followed this convention not only for `benc` encoding, but also for `penc` encoding. That is, in the prime mulitplicities list, the primes are sorted so that the highest values occur leftmost; and I ordered the binary string in the same way. This choice was made mostly on the basis of human readability: it has greater parallelism between the string-as-bits and string-as-multiplicity-stacks interpretation; in both cases the most significant base/prime is leftmost.
+
+For the implementation of `benc`/`bdec`, it is more convenient to start from the least significant prime. This is because primes can be efficiently enumerated starting from the least one (2). But to process starting from the most significant prime, one must know in advance how many primes are associated with the multiplicity list. There are several options and any of them can be made to work, though some are more elegant than others. It truly is an implementational details, and it is mentioned here only because one must handle it somehow.
+
+A key thing is that if the similar "least significant bits rightmost" is shared between the `benc` and `penc` mappings, (and `naturalperm` is defined as the composition of `bdec` and `penc` as defined above), then `naturalperm` has the property that smaller integers will in general be mapped to smaller integers, while larger integers will in general be mapped to larger integers. However, as we will show shortly, it is not an identity map.
+
+# `naturalperm`
+
+For the reader's enjoyment I have rendered the mapping for the first 100 values, along with the inverse.
+
+| n  | natperm(n)| natperm^-1 |
+|----|-----------|------------|
+| 1  |         1 |          1 |
+| 2  |         2 |          2 |
+| 3  |         3 |          3 |
+| 4  |         4 |          4 |
+| 5  |         5 |          5 |
+| 6  |         6 |          6 |
+| 7  |         9 |          9 |
+| 8  |         8 |          8 |
+| 9  |         7 |          7 |
+| 10 |        10 |         10 |
+| 11 |        17 |         15 |
+| 12 |        12 |         12 |
+| 13 |        33 |         25 |
+| 14 |        18 |         18 |
+| 15 |        11 |         27 |
+| 16 |        16 |         16 |
+| 17 |        65 |         11 |
+| 18 |        14 |         14 |
+| 19 |       129 |         21 |
+| 20 |        20 |         20 |
+| 21 |        19 |         35 |
+| 22 |        34 |         30 |
+| 23 |       257 |         45 |
+| 24 |        24 |         24 |
+| 25 |        13 |         49 |
+| 26 |        66 |         50 |
+| 27 |        15 |         75 |
+| 28 |        36 |         36 |
+| 29 |       513 |        125 |
+| 30 |        22 |         54 |
+| 31 |      1025 |         81 |
+| 32 |        32 |         32 |
+| 33 |        35 |         13 |
+| 34 |       130 |         22 |
+| 35 |        21 |         33 |
+| 36 |        28 |         28 |
+| 37 |      2049 |         55 |
+| 38 |       258 |         42 |
+| 39 |        67 |         63 |
+| 40 |        40 |         40 |
+| 41 |      4097 |         77 |
+| 42 |        38 |         70 |
+| 43 |      8193 |        105 |
+| 44 |        68 |         60 |
+| 45 |        23 |        175 |
+| 46 |       514 |         90 |
+| 47 |     16385 |        135 |
+| 48 |        48 |         48 |
+| 49 |        25 |        121 |
+| 50 |        26 |         98 |
+| 51 |       131 |        147 |
+| 52 |       132 |        100 |
+| 53 |     32769 |        245 |
+| 54 |        30 |        150 |
+| 55 |        37 |        225 |
+| 56 |        72 |         72 |
+| 57 |       259 |        343 |
+| 58 |      1026 |        250 |
+| 59 |     65537 |        375 |
+| 60 |        44 |        108 |
+| 61 |    131073 |        625 |
+| 62 |      2050 |        162 |
+| 63 |        39 |        243 |
+| 64 |        64 |         64 |
+| 65 |        69 |         17 |
+| 66 |        70 |         26 |
+| 67 |    262145 |         39 |
+| 68 |       260 |         44 |
+| 69 |       515 |         65 |
+| 70 |        42 |         66 |
+| 71 |    524289 |         99 |
+| 72 |        56 |         56 |
+| 73 |   1048577 |         91 |
+| 74 |      4098 |        110 |
+| 75 |        27 |        165 |
+| 76 |       516 |         84 |
+| 77 |        41 |        275 |
+| 78 |       134 |        126 |
+| 79 |   2097153 |        189 |
+| 80 |        80 |         80 |
+| 81 |        31 |        143 |
+| 82 |      8194 |        154 |
+| 83 |   4194305 |        231 |
+| 84 |        76 |        140 |
+| 85 |       133 |        385 |
+| 86 |     16386 |        210 |
+| 87 |      1027 |        315 |
+| 88 |       136 |        120 |
+| 89 |   8388609 |        539 |
+| 90 |        46 |        350 |
+| 91 |        73 |        525 |
+| 92 |      1028 |        180 |
+| 93 |      2051 |        875 |
+| 94 |     32770 |        270 |
+| 95 |       261 |        405 |
+| 96 |        96 |         96 |
+| 97 |  16777217 |        169 |
+| 98 |        50 |        242 |
+| 99 |        71 |        363 |
+| 100 |       52 |        196 |
+
+Upon cursory inspection, some things jump out to me. 
+
+## Fixed points
+
+Here are the fixed points from the list above:
+* 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96
+
+This set includes all powers of 2. In fact every fixed point in this set is of the form `p * 2^k` where p is one of {1, 2, 3, 5}. Note that 7 is not a fixed point, and neither is 7 * 2^1 = 14. One is tempted to conjecture that if _m_ and _n_ are both fixed points of this mapping, then so is _m * n_. This conjecture is falsified by _5 * 6 = 3 * 10_: 30 is not a fixed point. 
+
+## Primes
+
+The mapping is nondecreasing on prime numbers across the board. Starting from 7, it is strictly increasing (`natperm(p) > p for all p > 5 if p is prime`). In fact, `natperm(p) = 2^k[p] + 1`, where k is the prime's ordinality (2 is the 0th prime, 3 is the 1th prime, etc..); this fact falls out from the construction of `natperm`. 
+
+## Other k-cycles
+
+There are a number of 2-cycles in the first 100: 
+* (7, 9)
+* (14, 18) 
+* (28, 36)
+* (56, 72)
+
+There are no 3-cycles in the first 100. 
+
+## Escaping orbit
+
+The orbit of a value is defined as the sequence of values obtained by repeatedly applying a mapping. Here are the first 7 values in the orbit for 11, shown both as raw numbers and after taking the natural log:
+* raw: 11 —> 17 —> 65 —> 69 —> 515 —> 134217733 —> 18447026098442076193
+* ln(raw): 2.40 —> 2.83 —> 4.17 —> 4.23 —> 6.24 —> 18.71 —> 44.36
+
+While the log value is increasing by an average of 1 per step at first, it then increases by 12.5 on the fifth step, and then by 26 on the sixth step. This indicates super-exponential growth!
+
+The notion of orbit is familiar from the analysis of fractals and other chaotic dynamic systems. For example, the Mandelbrot set is defined as the set of complex numbers which don't escape under iteration. In the Mandelbrot setting, |z| > 2 implies |f(z)| > |z|, in other once the magnitude gets bigger than 2, it will continue to grow. For quick and dirty analysis of `naturalperm`, I defined escape as reaching a magnitude of 1 billion. 
+
+I then checked which items escape in the first 1000 integers. It turns out that nearly all starting values escape, and the time to escape is between 3 and 8 steps for the first 100 or 200 integers, but quickly drops to 2-3 steps for most integers above 200. The fixed points and 2-cycles reported above already make up the majority of fixed points and 2-cycles I found, and I found no other k-cycles besides 2-cycles. 
+
+I repeated the analysis for the inverse mapping. By symmetry, we might expect similar results; and that is exactly what I found. Both of these mappings then have similar statistical properties. Over some range of small numbers, they generally map about as many numbers to smaller numbers as larger numbers. However, because there are so many more large numbers than small numbers, the vast majority of orbits that start with small numbers "escape" (consist mostly of much larger numbers than they start with).
