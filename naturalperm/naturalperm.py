@@ -1,61 +1,63 @@
 from collections import Counter
-from typing import List
-from math import prod
+from typing import List, Optional
+from math import prod, log
 from primefac import primefac, primegen
 
-def int_to_binary_string(n: int) -> str:
-    return format(n, "b")
+REALLY_BIG_NUMBER = 1000000000
 
 
-def binary_string_to_int(bs: str) -> int:
-    return int(bs, 2)
+def benc(n: int) -> str:
+    return format(n - 1, "b")
 
 
-def int_to_prime_factorization(n: int) -> List[int]:
-    return sorted(primefac(n))
+def bdec(binstr: str) -> int:
+    return int(binstr, 2) + 1
 
 
-def prime_factorization_to_int(plist: List[int]) -> int:
-    return prod(plist)
-
-
-def encode_primefac_as_binary_string(factors: List[int]) -> str:
-    if not factors:
+def penc(n: int) -> str:
+    if n < 1:
+        raise ValueError("Can only encode positive integers")
+    if n == 1:
         return '0'
-    multiset = Counter(factors)
-    sbuf = [multiset[prime] * '1' for prime in primegen(max(factors) + 1)]
-    return '0'.join(sbuf[::-1])
+    prime_factors = list(primefac(n))
+    prime_cts, prime_ceil = Counter(prime_factors), 1 + max(prime_factors)
+    pstacks = [prime_cts[p] * '1' for p in primegen(prime_ceil)]
+    return '0'.join(pstacks[::-1])
 
 
-def decode_binary_string_as_primefac(bs: str) -> List[int]:
-    if bs == '0':
-        return []
+def pdec(primstr: str) -> int:
+    pstacks = primstr[::-1].split('0')
     plist, pgen = [], primegen()
-    for prime_multiplicity in bs[::-1].split('0'):
-        prime = next(pgen)
-        for tick in prime_multiplicity:
-            plist.append(prime)
-    return plist
+    for pstack in primstr[::-1].split('0'):
+        plist.extend(len(pstack)*[next(pgen)])
+    return prod(plist)
 
 
 def natperm(n: int) -> int:
     if n < 1:
-        raise ValueError("natperm is only defined for positive integers")
-    prime_factorization = int_to_prime_factorization(n)
-    encoded_binary_string = encode_primefac_as_binary_string(prime_factorization)
-    return 1 + binary_string_to_int(encoded_binary_string)
+        raise ValueError("Can only permute positive integers")
+    return bdec(penc(n))
+
 
 def natperminv(n: int) -> int:
     if n < 1:
-        raise ValueError("natperm is only defined for positive integers")
-    binary_string = int_to_binary_string(n - 1)
-    prime_factorization = decode_binary_string_as_primefac(binary_string)
-    return prime_factorization_to_int(prime_factorization)
+        raise ValueError("Can only permute positive integers")
+    return pdec(benc(n))
+
+##def orbit(x: int, escape: int = REALLY_BIG_NUMBER, f = natperm) -> List[Optional[int]]:
+##    orb = [x]
+##    while orb[-1] < escape:
+##        orb.append(f(orb[-1]))
+##        if orb[-1] == orb[0]:
+##            return orb[:-1]
+##    orb.append(None)
+##    return orb
 
 
 def main():
-    for i in range(1, 100):
-        print(i, natperm(i), natperminv(i))
+    for i in range(1, 50 + 1):
+        print(i, natperm(i))
+
 
 if __name__ == '__main__':
     main()
