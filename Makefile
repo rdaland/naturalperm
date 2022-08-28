@@ -18,7 +18,7 @@ default: help
 help:    ## Show this help.
 > @fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-all:     ## make build && make test && make publish
+all:     ## Execute build, test, and publish targets
 > make build && make test && make publish
 
 build:   ## Verify code can build
@@ -30,6 +30,8 @@ test:    ## Run unit tests
 publish: ## Release a package
 > poetry publish
 
+clean:   ## Remove build products
+> rm -fr dist
+
 install: ## Install dependencies
 > poetry install
-
