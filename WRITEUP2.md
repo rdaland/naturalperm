@@ -2,13 +2,25 @@
 
 A permutation is a mapping which reorders elements of a set. The set can be finite, or infinite. There are many "simple" permutations on infinite sets — for example, the identity permutation simply maps an element to itself (no reordering). This writeup takes up the challenge of defining a non-simple permutation on the natural numbers. An encoding is defined as an invertible mapping from the natural onto a subspace of _canonical binary strings_. The approach taken here is to find two different encodings $benc$ and $penc$; the permutation is defined by composing one encoding with the inverse of the other. After walking through the setup, some limited exploration and analysis is presented.
 
-# Permutations
+# Preliminaries
 
-A permutation is a 1-1 mapping from a set onto itself; in other words, an invertible rearrangement.
+A permutation $\sigma : X \rightarrow X$ is a 1-1 mapping from a set onto itself. In other words, it is an invertible mapping which covers an entire set.
 
-## Finite Permutations
+## Sets
 
-Finite sets can be represented by $\mathbb{Z}_n$ (the set of integers modulo _n_). Here is an example of a permutation on $\mathbb{Z}_6$:
+For concreteness, let us define the following:
+* natural numbers — $\mathbb{N} = \{ 0, 1 ,2, \ldots \}$
+* integers — $\mathbb{Z} = { \ldots, -1, 0, 1, 2, \ldots \}$
+* positive natural numbers — $\mathbb{Z}^+ = \{1,2,\ldots\}$
+* integers mod n — $mathbb{Z}_n = \{ 0, 1, \ldots, n-1 \}$
+
+The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $mathbb{Z}_6, $5 + 2 (mod 6) = 7 (mod 6) = 1$.
+
+The integers mod n are important because they are a model for finite permutations. Every finite permutation can be represented by a permutation on $mathbb{Z}_n$, for some $n$, by enumerating the elements and their mapping.
+
+## Fixed Points, Orbits, and Cycles
+
+Here is an example of a permutation on $\mathbb{Z}_6$:
 
 ```math
 P = 
@@ -28,7 +40,51 @@ The **orbit** of an element is the sequence of elements obtained by iteration. H
 1 \rightarrow 2 \rightarrow 4 \rightarrow 1 \rightarrow 2 \rightarrow 4 \rightarrow 1 \ldots
 ```
 
-The orbit eventually returns to $1$. When this occurs, it is called a **cycle**. It turns out that finite permutations can be uniquely represented in terms of their cycles. For example, the cycle notation for the permutation above is $P = (124)(35)(6)$. Note the cycle $(6)$ has a single element — $P$ maps $6$ to itself. This is called a **fixed point**.
+The orbit eventually returns to $1$. When this occurs, it is called a **cycle**. It turns out that finite permutations can be uniquely represented as a product of their cycles. For example, the cycle notation for the permutation above is $P = (124)(35)(6)$. Note the cycle $(6)$ has a single element — $P$ maps $6$ to itself. This is called a **fixed point**.
+
+## Invertibility
+
+The requirement of invertibility imposes strong constraints on whether a mapping constitutes a permutation. 
+
+For example, define the doubling function $\mu_2(n) = 2n$ on the integers. This mapping cannot define a permutation, because it is not onto. For example, the value $3$ does not have an inverse. More generally, the multiply-by-k mapping $\mu_k(n) = kn$ cannot define a permutation on $\mathbb{Z}$ for any value of $k$ (except $|k| = 1$).
+
+Besides the operation, the domain of a mapping can affect its invertibility. For example, let $\rho_1(n) = n + 1$ be the shift-by-one mapping. If the domain is the set of (positive and negative) integers $\mathbb{Z}$, $\rho_1$ defines a permutation. However, if the domain is the set of natural numbers, $\rho_1$ does not define a permutation. This is because the natural numbers have a least element, $0$. The shift-by-one mapping $\rho_1$ is of course defined for the value $0$: $\rho_1(0) = 1$. However, the key point is that the inverse is not defined with respect to the domain of natural numbers: $\rho_1^{-1}(0) = \text{??}$. Put another way, the integer $-1$ could be the inverse, except $-1$ is not a natural number.
+
+## Canonical Binary Strings
+
+Let $\Sigma = \{ 0, 1 \}$, and $\Sigma^*$ be the set of finite strings over the alphabet $\Sigms$. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+* $s = "0"$
+* the initial (most significant) bit of $s$ is a $1$
+
+An example of a non-canonical string is $0101$. It is non-canonical because the initial (most significant) bit is $0$. The canonical binary string that corresponds to $0101$ is $101$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed. Thus, we define canonical binary strings as the set of strings in canonical form, i.e.
+
+```math
+\mathbb{B} = \{ "0" \} \union \{ "1s" | s \in \Sigma^* \}
+```
+
+# Encodings
+
+For the purpose of this writeup, an **encoding** is an invertible mapping from $\mathbb{Z}$ onto $\mathbb{B}$, and a **decoding** is the corresponding inverse.
+
+## Binary Encoding/Decoding
+## Stack Encoding/Decoding
+## Prime-stack Encoding/Decoding
+
+# Definition
+
+# Exploration
+
+# Some Properties
+
+# Final Thoughts
+
+# Simple Permutations
+
+A permutation is a 1-1 mapping from a set onto itself; in other words, an invertible rearrangement.
+
+## Finite Permutations
+
+
 
 ## "Simple" Infinite Permutations
 
@@ -91,22 +147,5 @@ The permutations given in this section are all "simple" in some sense. While we 
 The "cycles" are better viewed as partitions of the integers; and in both cases the values which make up a cycle are determined arithmetically. In the former case (infinite product, finite cycles), the cycles of $\sigma$ are just even-odd pairs of the form $(2k, 2k+1)$; and the cycles of $\nu$ are just negative-positive pairs of the form $(k, -k)$. In the latter case (finite product, infinite cycles), the cycles of the "shift by $k$" permutation can be identified with the elements of $\mathbb{Z}_k$ (except for $k=0$, the identity permutation).
 
 A finite permutation is of course the finite product of finite cycles. We have seen that various simple infinite permutations are either the infinite product of finite cycles, or the finite product of infinite cycles. There is a notable gap — a permutation which is the infinite product of infinite cycles. It is tempting to speculate that a "complex" permutation is exactly one which fills this gap.
-
-## Single-Sided vs. Double-Sided Infinity
-
-# Preliminaries
-
-## Canonical Binary Strings
-## Binary Encoding/Decoding
-## Stack Encoding/Decoding
-## Prime-stack Encoding/Decoding
-
-# Definition
-
-# Exploration
-
-# Some Properties
-
-# Final Thoughts
 
 # References
