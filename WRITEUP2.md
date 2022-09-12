@@ -10,12 +10,12 @@ A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. I
 
 For concreteness, let us define the following:
 ```math
-\begin{matrix}[rll]
+\begin{array}[rll]
     \mathbb{N}     & \{ 0, 1 ,2, \ldots \}             & \text{ natural numbers}           \\
     \mathbb{Z}     & \{ \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}                  \\
     \mathbb{Z}^{+} & \{1,2,\ldots\}                    & \text{ positive natural numbers}  \\
     \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}           & \text{ integers mod n}            \\
-\end{matrix}
+\end{array}
 ```
 
 The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $\mathbb{Z}_6$,
@@ -101,13 +101,13 @@ Formally we define the **b**inary **enc**oding $benc: \mathbb{N} \rightarrow \ma
 The Peano axioms define the natural numbers according to a special element $0$ and the successor relation $S$. For example, $1$ is defined by a single application of the successor relation, 2 is defined by 2 applications, etc..:
 
 ```math
-\begin{matrix}
+\begin{array}[cll]
     0:     & \langle 0 \rangle      & \text{0 is the least element}                     \\
     1:     & \langle S0 \rangle     & \text{1 is the successor of 0}                    \\
     2:     & \langle SS0 \rangle    & \text{2 is the successor of the successor of 0}   \\
     3:     & \langle SSSSS0 \rangle & \text{3 is the successor of the successor of the successor of 0} \\
            & \ldots                 &                                                   \\
-\end{matrix}
+\end{array}
 ```
 
 This can be thought of as the "stack-of-plates" representation of a nonnegative integer — the integer $n$ is represented by $n$ applications of the successor function (plates), on top of the least element (base). 
@@ -143,7 +143,7 @@ The finite permutation $P$ given earlier can be lifted into a corresponding perm
 ```math
 P^{\infty} = \begin{cases}
   P(n) & \text{ if } n \in Domain(P) \\
-  n    & \text{ otherwise } \\
+  n    & \text{ otherwise }
 \end{cases}
 ```
 
@@ -156,7 +156,7 @@ Like finite permutations, infinite permutations can have cycles. Consider the fo
 ```math
 \sigma(n) = \begin{cases}
   n + 1 & \text{ if n is even} \\
-  n - 1 & \text{ if n is odd} \\
+  n - 1 & \text{ if n is odd}
 \end{cases}
 ```
 
