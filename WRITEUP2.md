@@ -11,14 +11,20 @@ A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. I
 For concreteness, let us define the following:
 ```math
 \begin{matrix}
-    \mathbb{N}     & \{ 0, 1 ,2, \ldots \}            & \text{ natural numbers}
-    \mathbb{Z}     & { \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}
-    \mathbb{Z}^{+} & \{1,2,\ldots\}                   & \text{ positive natural numbers}
-    \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}          & \text{ integers mod n}
+    \mathbb{N}     & \{ 0, 1 ,2, \ldots \}             & \text{ natural numbers}
+    \mathbb{Z}     & \{ \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}
+    \mathbb{Z}^{+} & \{1,2,\ldots\}                    & \text{ positive natural numbers}
+    \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}           & \text{ integers mod n}
 \end{matrix}
 ```
 
-The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $\mathbb{Z}_6$, $5 + 2 \text{ (mod 6)} = 7 \text{ (mod 6)} = 1$. The integers mod _n_ are important because they are a model for finite permutations. Every finite permutation on $n$ elements can be represented by a permutation on $\mathbb{Z}_n$, by enumerating the elements and their mapping.
+The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $\mathbb{Z}_6$,
+
+```math
+5 + 2 \text{ (mod 6)} = 7 \text{ (mod 6)} = 1
+```
+
+Every finite permutation on $n$ elements can be represented by a permutation on $\mathbb{Z}_n$, simply by enumerating the elements and their mapping.
 
 ## Fixed Points, Orbits, and Cycles
 
@@ -58,14 +64,14 @@ Mappings which are invertible on the integers might not be on the natural number
 
 ## Canonical Binary Strings
 
-Let the binary alphabet be $\Sigma = \{ 0, 1 \}$, and $\Sigma^*$ the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
-* $s = \text{'} 0 \text{'}$
+Let the binary alphabet be $\Sigma = \{0,1\}$, and $\Sigma^*$ the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+* $s = \symbol{34} 0 \symbol{34}$
 * the initial (most significant) bit of $s$ is a $1$
 
-(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\text{'}0101\text{'}$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\text{'}0101\text{'}$ is $\text{'}101\text{'}$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\text{'}0\text{'}$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
+(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\symbol{34}0101\symbol{34}$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\symbol{34}0101\text\symbol{34}$ is $\symbol{34}101\symbol{34}$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\symbol{34}0\symbol{34}$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
 ```math
-\mathbb{B} = \{ \text{'} 0 \text{'} \} \cup \{ \text{'}1s\text{'} \, | \, s \in \{0,1\}^{*} \}
+\mathbb{B} = \{ \symbol{34} 0 \symbol{34} \} \cup \{ \symbol{34}1s\symbol{34} \, | \, s \in \{0,1\}^{*} \}
 ```
 
 # Encodings
