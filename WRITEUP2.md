@@ -11,10 +11,10 @@ A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. I
 For concreteness, let us define the following:
 ```math
 \begin{matrix}
-    \mathbb{N}     & \{ 0, 1 ,2, \ldots \}             & \text{ natural numbers}
-    \mathbb{Z}     & \{ \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}
-    \mathbb{Z}^{+} & \{1,2,\ldots\}                    & \text{ positive natural numbers}
-    \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}           & \text{ integers mod n}
+    \mathbb{N}     & \{ 0, 1 ,2, \ldots \}             & \text{ natural numbers}           \\
+    \mathbb{Z}     & \{ \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}                  \\
+    \mathbb{Z}^{+} & \{1,2,\ldots\}                    & \text{ positive natural numbers}  \\
+    \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}           & \text{ integers mod n}            \\
 \end{matrix}
 ```
 
@@ -65,13 +65,13 @@ Mappings which are invertible on the integers might not be on the natural number
 ## Canonical Binary Strings
 
 Let the binary alphabet be $\Sigma = \{0,1\}$, and $\Sigma^*$ the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
-* $s = \symbol{34} 0 \symbol{34}$
+* $s = \text{\symbol{34}}0\text{\symbol{34}}$
 * the initial (most significant) bit of $s$ is a $1$
 
-(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\symbol{34}0101\symbol{34}$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\symbol{34}0101\text\symbol{34}$ is $\symbol{34}101\symbol{34}$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\symbol{34}0\symbol{34}$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
+(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\text{\symbol{34}}0101\text{\symbol{34}}$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\text{\symbol{34}}0101\text{\symbol{34}}$ is $\text{\symbol{34}}101\text{\symbol{34}}$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\text{\symbol{34}}0\text{\symbol{34}}$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
 ```math
-\mathbb{B} = \{ \symbol{34} 0 \symbol{34} \} \cup \{ \symbol{34}1s\symbol{34} \, | \, s \in \{0,1\}^{*} \}
+\mathbb{B} = \{ \text{\symbol{34}} 0 \text{\symbol{34}} \} \cup \{ \text{\symbol{34}}1s\text{\symbol{34}} \, | \, s \in \{0,1\}^{*} \}
 ```
 
 # Encodings
