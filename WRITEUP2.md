@@ -4,19 +4,21 @@ A permutation is a mapping which reorders elements of a set. The set can be fini
 
 # Preliminaries
 
-A permutation $\sigma : X \rightarrow X$ is a 1-1 mapping from a set onto itself. In other words, it is an invertible mapping which covers an entire set.
+A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. In other words, it is an invertible mapping whose image covers the domain.
 
 ## Sets
 
 For concreteness, let us define the following:
-* $\mathbb{N} = \{ 0, 1 ,2, \ldots \}$ — (natural numbers)
-* $\mathbb{Z} = { \ldots, -1, 0, 1, 2, \ldots \}$ — (integers)
-* $\mathbb{Z}^{+} = \{1,2,\ldots\}$ — (positive natural numbers)
-* $\mathbb{Z}_n = \{ 0, 1, \ldots, n-1 \}$ — (integers mod _n_)
+```math
+\begin{matrix}
+    \mathbb{N}     & \{ 0, 1 ,2, \ldots \}            & \text{ natural numbers}
+    \mathbb{Z}     & { \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}
+    \mathbb{Z}^{+} & \{1,2,\ldots\}                   & \text{ positive natural numbers}
+    \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}          & \text{ integers mod n}
+\end{matrix}
+```
 
-The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $\mathbb{Z}_6, $5 + 2 (mod 6) = 7 (mod 6) = 1$.
-
-The integers mod _n_ are important because they are a model for finite permutations. Every finite permutation on $n$ elements can be represented by a permutation on $\mathbb{Z}_n$, by enumerating the elements and their mapping.
+The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $\mathbb{Z}_6$, $5 + 2 \text{ (mod 6)} = 7 \text{ (mod 6)} = 1$. The integers mod _n_ are important because they are a model for finite permutations. Every finite permutation on $n$ elements can be represented by a permutation on $\mathbb{Z}_n$, by enumerating the elements and their mapping.
 
 ## Fixed Points, Orbits, and Cycles
 
@@ -42,6 +44,10 @@ The **orbit** of an element is the sequence of elements obtained by iteration. H
 
 The orbit eventually returns to $1$. When this occurs, it is called a **cycle**. It turns out that finite permutations can be uniquely represented as a product of their cycles. For example, the cycle notation for the permutation above is $P = (0)(124)(35)$. Note the cycle $(0)$ has a single element — $P$ maps $0$ to itself. This is called a **fixed point**.
 
+## Simple Integer Mappings
+
+TODO: define shift-by-k, multiply-by-k, parity-flipping, sign-flipping mappings
+
 ## Invertibility
 
 The requirement of invertibility imposes strong constraints on whether a mapping constitutes a permutation. 
@@ -52,14 +58,14 @@ Mappings which are invertible on the integers might not be on the natural number
 
 ## Canonical Binary Strings
 
-Let the binary alphabet be $\Sigma = \{ 0, 1 \}$, and $\Sigma^{*}$ the set of finite strings over this alphabet. A string $s \in \Sigma^{*}$ is in canonical form if any of the following conditions hold:
-* $s = \text{"}0\text{"}$
+Let the binary alphabet be $\Sigma = \{ 0, 1 \}$, and $\Sigma^*$ the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+* $s = \text{'} 0 \text{'}$
 * the initial (most significant) bit of $s$ is a $1$
 
-(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\text{"}0101\text{"}$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\text{"}0101\text{"}$ is $\text{"}101\text{"}$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\text{"}0\text{"}$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
+(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\text{'}0101\text{'}$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\text{'}0101\text{'}$ is $\text{'}101\text{'}$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\text{'}0\text{'}$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
 ```math
-\mathbb{B} = \{ \text{"}0\text{"} \} \cup \{ \text{"}1s\text{"} | s \in \{0,1\}^{*} \}
+\mathbb{B} = \{ \text{'} 0 \text{'} \} \cup \{ \text{'}1s\text{'} \, | \, s \in \{0,1\}^{*} \}
 ```
 
 # Encodings
@@ -71,16 +77,16 @@ For the purpose of this writeup, an **encoding** is an invertible mapping from $
 It is well known that a natural number can be represented as a sum over powers of 2. For example,
 
 ```math
-13 = 2^3 + 2^2 + 2^1
+13 = 2^3 + 2^2 + 2^0
 ```
 
 The integer $n$ can equivalently be represented as a sum of all powers of 2 up to some $k$, each multiplied by a coefficient that is either 0 or 1:
 
 ```math
-10 = 1 \cdot 2^3 + 1 \cdot 2^2 + 1 \cdot 2^1 + 0 \cdot 2^0
+13 = (1 \cdot 2^3) + (1 \cdot 2^2) + (0 \cdot 2^1) + (1 \cdot 2^0)
 ```
 
-Each possible sequence of coefficients — aka bits — can be identified with a natural number. For example, the string $\text{"}1110\text{"}$ corresponds to the natural number $15$ as shown above. Note that multiple distinct strings can correspond to the same natural number. For example, $\text{"}01110\text{"}$ also corresponds to $15$; so does $\text{"}001110\text{"}$. In order to guarantee invertibility, we require the binary string that is identified with a natural number be unique. This is achieved with a canonical binary string. 
+Each possible sequence of coefficients — better known as bits — can be identified with a natural number. For example, the string $\text{'}1110\text{'}$ corresponds to the natural number $13$ as shown above. Note that multiple distinct strings can correspond to the same natural number. For example, $\text{'}01110\text{'}$ also corresponds to $15$; so does $\text{'}001110\text{'}$. In order to guarantee invertibility, we require the binary string that is identified with a natural number be unique. This is achieved with a canonical binary string. 
 
 Formally we define the **b**inary **enc**oding $benc: \mathbb{N} \rightarrow \mathbb{B}$ as the unique canonical binary string whose elements (bits) represent coefficients of the number with respect to powers of 2. We define $bdec: \mathbb{B} \rightarrow \mathbb{N}$ as the corresponding inverse, in other words the **b**inary **dec**oding that invers $benc$. We assume this encoding is familiar to readers, so we do not explain it further.
 
@@ -90,18 +96,17 @@ The Peano axioms define the natural numbers according to a special element $0$ a
 
 ```math
 \begin{matrix}
-    0:     & \text{"}0\text{"}      & 0 is the least element                     \\
-    1:     & \text{"}S0\text{"}     & 1 is the successor of 0                    \\
-    2:     & \text{"}SS0\text{"}    & 2 is the successor of the successor of 0   \\
-    3:     & \text{"}SSSSS0\text{"} & 3 is the successor of the successor of the successor of 0 \\
-    \ldots & \ldots                 & \ldots                                     \\
+    0:     & \text{'}0\text{'}      & \text{0 is the least element}                     \\
+    1:     & \text{'}S0\text{'}     & \text{1 is the successor of 0}                    \\
+    2:     & \text{'}SS0\text{'}    & \text{2 is the successor of the successor of 0}   \\
+    3:     & \text{'}SSSSS0\text{'} & \text{3 is the successor of the successor of the successor of 0} \\
+           & \ldots                 &                                                   \\
 \end{matrix}
 ```
 
 This can be thought of as the "stack-of-plates" representation of a nonnegative integer — the integer $n$ is represented by $n$ applications of the successor function (plates), on top of the least element (base). 
 
-The stack encoding is straightforward to define — just replace $S$ in the above with $1$. Note that while this mapping is 1-1, it does not cover the space of canonical binary strings. So it is not directly suitable for our purposes. Instead, we will combine stack encoding with another mapping in the next section to define an invertible mapping that does cover $\mathbb{B}$.
-
+The stack encoding is straightforward to define — just replace $S$ in the above with $1$. Note that while this mapping is 1-1, it does not cover the space of canonical binary strings. So it is not suitable for our purposes, at least not directly. Instead, we will combine stack encoding with another mapping to define an invertible mapping that does cover $\mathbb{B}$. That is the topic of the next subsection.
 
 ## Prime-stack Encoding/Decoding
 
@@ -129,7 +134,7 @@ This section defines and gives examples of various "simple" families of permutat
 
 The finite permutation $P$ given earlier can be lifted into a corresponding permutation on the space of all integers by defining
 
-```
+```math
 P^{\infty} = \begin{cases}
   P(n) & \text{ if } n \in Domain(P) \\
   n    & \text{ otherwise } \\
