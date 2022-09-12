@@ -10,7 +10,7 @@ A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. I
 
 For concreteness, let us define the following:
 ```math
-\begin{matrix}
+\begin{matrix}[rll]
     \mathbb{N}     & \{ 0, 1 ,2, \ldots \}             & \text{ natural numbers}           \\
     \mathbb{Z}     & \{ \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}                  \\
     \mathbb{Z}^{+} & \{1,2,\ldots\}                    & \text{ positive natural numbers}  \\
@@ -64,11 +64,11 @@ Mappings which are invertible on the integers might not be on the natural number
 
 ## Canonical Binary Strings
 
-Let the binary alphabet be $\Sigma = \{0,1\}$, and $\Sigma^*$ the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+Let the binary alphabet be $ \Sigma = \{ 0,1 \} $. Further, let $\Sigma^{*}$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
 * $s = \langle 0 \rangle$
 * the initial (most significant) bit of $s$ is a $1$
 
-(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\langle 0101 \rangle$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\langle 0101 \rangle$ is $\langle 101 \rangle$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\langle 0 \rangle$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
+(Notation: We enclose strings with angle brackets, but not individual characters of the alphabet.) An example of a non-canonical string is $\langle 0101 \rangle$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\langle 0101 \rangle$ is $\langle 101 \rangle$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\langle 0 \rangle$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
 ```math
 \mathbb{B} = \{ \langle 0 \rangle \} \cup \{ \langle 1s \rangle \, | \, s \in \{0,1\}^{*} \}
@@ -92,7 +92,7 @@ The integer $n$ can equivalently be represented as a sum of all powers of 2 up t
 13 = (1 \cdot 2^3) + (1 \cdot 2^2) + (0 \cdot 2^1) + (1 \cdot 2^0)
 ```
 
-Each possible sequence of coefficients — better known as bits — can be identified with a natural number. For example, the string $\text{'}1110\text{'}$ corresponds to the natural number $13$ as shown above. Note that multiple distinct strings can correspond to the same natural number. For example, $\text{'}01110\text{'}$ also corresponds to $15$; so does $\text{'}001110\text{'}$. In order to guarantee invertibility, we require the binary string that is identified with a natural number be unique. This is achieved with a canonical binary string. 
+Each possible sequence of coefficients — better known as bits — can be identified with a natural number. For example, the string $\langle 1110 \rangle$ corresponds to the natural number $13$ as shown above. Note that multiple distinct strings can correspond to the same natural number. For example, $\langle 01110 \rangle$ also corresponds to $15$; so does $\langle 001110 \rangle$. In order to guarantee invertibility, we require the binary string that is identified with a natural number be unique. This is achieved with a canonical binary string. 
 
 Formally we define the **b**inary **enc**oding $benc: \mathbb{N} \rightarrow \mathbb{B}$ as the unique canonical binary string whose elements (bits) represent coefficients of the number with respect to powers of 2. We define $bdec: \mathbb{B} \rightarrow \mathbb{N}$ as the corresponding inverse, in other words the **b**inary **dec**oding that invers $benc$. We assume this encoding is familiar to readers, so we do not explain it further.
 
@@ -102,10 +102,10 @@ The Peano axioms define the natural numbers according to a special element $0$ a
 
 ```math
 \begin{matrix}
-    0:     & \text{'}0\text{'}      & \text{0 is the least element}                     \\
-    1:     & \text{'}S0\text{'}     & \text{1 is the successor of 0}                    \\
-    2:     & \text{'}SS0\text{'}    & \text{2 is the successor of the successor of 0}   \\
-    3:     & \text{'}SSSSS0\text{'} & \text{3 is the successor of the successor of the successor of 0} \\
+    0:     & \langle 0 \rangle      & \text{0 is the least element}                     \\
+    1:     & \langle S0 \rangle     & \text{1 is the successor of 0}                    \\
+    2:     & \langle SS0 \rangle    & \text{2 is the successor of the successor of 0}   \\
+    3:     & \langle SSSSS0 \rangle & \text{3 is the successor of the successor of the successor of 0} \\
            & \ldots                 &                                                   \\
 \end{matrix}
 ```
