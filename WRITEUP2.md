@@ -65,13 +65,13 @@ Mappings which are invertible on the integers might not be on the natural number
 ## Canonical Binary Strings
 
 Let the binary alphabet be $\Sigma = \{0,1\}$, and $\Sigma^*$ the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
-* $s = \"0\"$
+* $s = \langle 0 \rangle$
 * the initial (most significant) bit of $s$ is a $1$
 
-(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\"0101\"$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\"0101\"$ is $\"101\"$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\"0\"$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
+(We denote strings by enclosing them with double quotes.) An example of a non-canonical string is $\langle 0101 \rangle$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\langle 0101 \rangle$ is $\langle 101 \rangle$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\langle 0 \rangle$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
 ```math
-\mathbb{B} = \{ \" 0 \" \} \cup \{ \"1s\" \, | \, s \in \{0,1\}^{*} \}
+\mathbb{B} = \{ \langle 0 \rangle \} \cup \{ \langle 1s \rangle \, | \, s \in \{0,1\}^{*} \}
 ```
 
 # Encodings
