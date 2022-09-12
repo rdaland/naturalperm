@@ -9,14 +9,13 @@ A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. I
 ## Sets
 
 For concreteness, let us define the following:
-```math
-\begin{array}[rll]
-    \mathbb{N}     & \{ 0, 1 ,2, \ldots \}             & \text{ natural numbers}           \\
-    \mathbb{Z}     & \{ \ldots, -1, 0, 1, 2, \ldots \} & \text{ integers}                  \\
-    \mathbb{Z}^{+} & \{1,2,\ldots\}                    & \text{ positive natural numbers}  \\
-    \mathbb{Z}_n   & \{ 0, 1, \ldots, n-1 \}           & \text{ integers mod n}            \\
-\end{array}
-```
+
+| name                     | symbol           | values                              |
+| :--                      | :--              | :--                                 |
+| natural numbers          | $\mathbb{N}$     | $\{ 0, 1 ,2, \ldots \}$             |
+| integers                 | $\mathbb{Z}$     | $\{ \ldots, -1, 0, 1, 2, \ldots \}$ |
+| positive natural numbers | $\mathbb{Z}^{+}$ | $\{1,2,\ldots\}$                    |
+| integers mod n           | $\mathbb{Z}_n$   | $\{ 0, 1, \ldots, n-1 \}$           |
 
 The last set is special, in that arithmetic operations are computed with respect to modulo $n$; in other words they "wrap around". For example, in $\mathbb{Z}_6$,
 
@@ -94,21 +93,19 @@ The integer $n$ can equivalently be represented as a sum of all powers of 2 up t
 
 Each possible sequence of coefficients — better known as bits — can be identified with a natural number. For example, the string $\langle 1110 \rangle$ corresponds to the natural number $13$ as shown above. Note that multiple distinct strings can correspond to the same natural number. For example, $\langle 01110 \rangle$ also corresponds to $15$; so does $\langle 001110 \rangle$. In order to guarantee invertibility, we require the binary string that is identified with a natural number be unique. This is achieved with a canonical binary string. 
 
-Formally we define the **b**inary **enc**oding $benc: \mathbb{N} \rightarrow \mathbb{B}$ as the unique canonical binary string whose elements (bits) represent coefficients of the number with respect to powers of 2. We define $bdec: \mathbb{B} \rightarrow \mathbb{N}$ as the corresponding inverse, in other words the **b**inary **dec**oding that invers $benc$. We assume this encoding is familiar to readers, so we do not explain it further.
+Formally we define the **b**inary **enc**oding $benc: \mathbb{N} \rightarrow \mathbb{B}$ as the unique canonical binary string whose elements (bits) represent coefficients of the number with respect to powers of 2. We define $bdec: \mathbb{B} \rightarrow \mathbb{N}$ as the corresponding inverse, in other words the **b**inary **dec**oding that inverts $benc$. We assume this encoding is familiar to readers, so we do not explain it further.
 
 ## Stack Encoding/Decoding
 
 The Peano axioms define the natural numbers according to a special element $0$ and the successor relation $S$. For example, $1$ is defined by a single application of the successor relation, 2 is defined by 2 applications, etc..:
 
-```math
-\begin{array}[cll]
-    0:     & \langle 0 \rangle      & \text{0 is the least element}                     \\
-    1:     & \langle S0 \rangle     & \text{1 is the successor of 0}                    \\
-    2:     & \langle SS0 \rangle    & \text{2 is the successor of the successor of 0}   \\
-    3:     & \langle SSSSS0 \rangle & \text{3 is the successor of the successor of the successor of 0} \\
-           & \ldots                 &                                                   \\
-\end{array}
-```
+| natural number | Peano string             | definition                                                |
+|       :-:      |                      --: | :--                                                       |
+|        0       | $\langle 0 \rangle$      | 0 is the least element                                    |
+|        1       | $\langle S0 \rangle$     | 1 is the successor of 0                                   |
+|        2       | $\langle SS0 \rangle$    | 2 is the successor of the successor of 0                  |
+|        3       | $\langle SSSSS0 \rangle$ | 3 is the successor of the successor of the successor of 0 |
+|       ...      | ...                      | ...                                                       |
 
 This can be thought of as the "stack-of-plates" representation of a nonnegative integer — the integer $n$ is represented by $n$ applications of the successor function (plates), on top of the least element (base). 
 
