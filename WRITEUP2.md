@@ -61,17 +61,45 @@ We will abuse notation slightly by referring to the following mappings, without 
 
 The requirement of invertibility imposes strong constraints on whether a mapping constitutes a permutation. 
 
-For example, define the doubling function $\mu_2(n) = 2n$ on the integers. This mapping cannot define a permutation, because the image does not cover the entire set. For example, the value $3$ does not have an inverse. More generally, the multiply-by-k mapping $\mu_k(n) = kn$ cannot define a permutation on $\mathbb{Z}$ for any value of $k$ (except $|k| = 1$).
+For example, the doubling function $\mu_2(n) = 2n$ cannot define a permutation on the integers, because the image does not cover the entire set. For example, the value $3$ does not have an inverse. The only values of $k$ for which $\mu_k$ defines a permutation on the integers are $k = 1$ (the identity mapping) and $k = -1$ (the sign-flipping map).
 
-Mappings which are invertible on the integers might not be on the natural numbers. For example, let $\rho_1(n) = n + 1$ be the shift-by-one mapping. This is inveritble for the integers. However, if the domain is the natural numbers, $\rho_1$ does not define a permutation. This is because the natural numbers have a least element, $0$. There is no inverse for this element; the integer $-1$ could be the inverse, except $-1$ is not a natural number.
+The "same" mapping might be a permutation or not, depending on its domain. Let us consider the shift-by-one mapping, $\sigma_1(n) = n + 1$. If the domain is the integers $\mathbb{Z}$, $\sigma_1$ is invertible — to obtain the inverse for any $n$, simply subtract 1 from it. However, when the domain is restricted to the natural numbers , it is not invertible. This is because the natural numbers have a least element, $0$. Subtraction from the least element is undefined; or put another way, $-1$ does not belong to $\mathbb{N}$. Even though the cardinality of $\mathbb{N}$ and $\mathbb{Z}$ is the same, the set of permutations on the natural numbers is much more restricted than for the integers as a whole.
+
+## Simple Infinite Permutations
+
+The parity-flipping and sign-flipping mappings define very simple permutations on the integers. In both cases, the permutation can be written as the product of (mostly) 2-cycles:
+
+```math
+\rho = \ldots (-2,-1) (0,1) (2,3) \ldots
+\phi = (0) (1,-1) (2,-2) \ldots
+```
+
+Unlike finite permutations, it is not guaranteed that infinite permutations can be expressed as the product of cycles — at least, not without modifying our understanding of cycle. If we consider the shift-by-one permutation, the orbit of an element does not repeat. The orbit of every integer $k$ is the set $\{ k, k+1, \ldots \}$. There are no cycles; or put differently, there is 1 cycle of infinite length.
+
+It is instructive to consider the shift permutation when the shift constant is larger than 1. For example, consider $\rho_6(n) = n + 6$. The orbit of $0$ is $\{0, 6, 12, \ldots \}$. The orbits of $1$, $2$, $3$, $4$, and $5% do not overlap with the orbit of $0$, nor with each other. But $6$ is different — the orbit of $6$ contains all the same values as the orbit of $0$, except for $0$ itself. Formally, we could say that (the orbit of) $6$ _eventually agrees_ with the orbit of $0$ (and with $-6$, and with $12$, etc..). In fact, we could partition the integers into 6 classes, depending on whether their orbit eventually agrees with the orbit of $0$, $1$, $2$, $3$, $4$, or $5$. If we agreed to call each element of that partition a cycle (of infinite length), then we could say that $\rho_6$ is represented by a finite product of 6 infinite cycles. (In fact, this is roughly how $\mathbb{Z}_6$ is constructed from the integers.)
+
+A final class of simple infinite permutations consists of mappings which map an element to itself for all but a finite number of elements. For a given finite permutation $\pi$, it is straightforward to "lift" it to a corresponding permutation on an infinite set, like so:
+
+```math
+\pi^{\infty} = \begin{cases}
+  \pi(n) & \text{ if } n \in Domain(\pi) \\
+  n    & \text{ otherwise }
+\end{cases}
+```
+
+By construction, this lifted mapping is the identity function everywhere except on the domain of $\pi$. In most interesting ways, these two permutations behave the same. The cycles of $ \pi^{\infty} $ are the cycles of $\pi$, plus fixed points for every other element which is not in the domain of $\pi$. The nontrivial mappings of $\pi$ and $ \pi^{\infty} $ are the same. So every infinite permutation in this class can be identified by the corresponding finite permutation.
+
+# Encoding
+
+The strategy is to define an encoding as an invertible mapping from the natural numbers to a space of **canonical binary strings**. (A decoding is defined as the inverse.) By creating two unrelated mappings, `benc`/`bdec` and `penc`/`pdec`, we define a permutation on the natural numbers by composing one encoder with the non-matching decoder.
 
 ## Canonical Binary Strings
 
 Let the binary alphabet be $ \Sigma = \{ 0,1 \} $. Further, let $\Sigma^{*}$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
 * $s = \langle 0 \rangle$
-* the initial (most significant) bit of $s$ is a $1$
+* the initial/leftmost/most significant bit of $s$ is a $1$
 
-(Notation: We enclose strings with angle brackets, but not individual characters of the alphabet.) An example of a non-canonical string is $\langle 0101 \rangle$. It is non-canonical because the initial bit is $0$. The canonical binary string that corresponds to $\langle 0101 \rangle$ is $\langle 101 \rangle$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\langle 0 \rangle$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
+Notation: We enclose strings with angle brackets, but not individual characters of the alphabet. An example of a non-canonical string is $\langle 0101 \rangle$. It is non-canonical because the initial bit is $0$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The canonical binary string that corresponds to $\langle 0101 \rangle$ is $\langle 101 \rangle$. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\langle 0 \rangle$ from an empty string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
 ```math
 \mathbb{B} = \{ \langle 0 \rangle \} \cup \{ \langle 1s \rangle \, | \, s \in \{0,1\}^{*} \}
@@ -79,7 +107,7 @@ Let the binary alphabet be $ \Sigma = \{ 0,1 \} $. Further, let $\Sigma^{*}$ be 
 
 # Encodings
 
-For the purpose of this writeup, an **encoding** is an invertible mapping from $\mathbb{N}$ onto $\mathbb{B}$, and a **decoding** is the corresponding inverse. We will assume that encodings are rendered with the most significant bits leftmost. (We will formalize the notion of significant after giving some concrete examples of encodings and decodings.)
+For the purpose of this writeup, an **encoding** is an invertible mapping from $\mathbb{N}$ onto $\mathbb{B}$, and a **decoding** is the corresponding inverse. To be crystal clear about this, we use the term "onto" in the technical sense that the image of $\mathbb{N}$ must cover $\mathbb{B}$. In other words, a mapping $xenc$ can only be an encoding if for every canonical binary string $b$, there exists some natural number $n$ such that $xenc(n) = b$. This writeup will render strings left-to-right, with the most significant bits leftmost. (We will explain the notion of significant bits more after giving some concrete examples of encodings and decodings.)
 
 ## Binary Encoding/Decoding
 
@@ -95,9 +123,9 @@ The integer $n$ can equivalently be represented as a sum of all powers of 2 up t
 13 = (1 \cdot 2^3) + (1 \cdot 2^2) + (0 \cdot 2^1) + (1 \cdot 2^0)
 ```
 
-Each possible sequence of coefficients — better known as bits — can be identified with a natural number. For example, the string $\langle 1110 \rangle$ corresponds to the natural number $13$ as shown above. Note that multiple distinct strings can correspond to the same natural number. For example, $\langle 01110 \rangle$ also corresponds to $15$; so does $\langle 001110 \rangle$. In order to guarantee invertibility, we require the binary string that is identified with a natural number be unique. This is achieved with a canonical binary string. 
+The general idea behind the **b**inary **enc**oding ($benc$) is to identify the integer (e.g. $13$) with the sequence of coefficients (aka bits). The corresponding binary decoder simply maps the digit sequence back into an integer. This is a highly familiar mapping, familiar to most programmers and mathematicians alike.
 
-Formally we define the **b**inary **enc**oding $benc: \mathbb{N} \rightarrow \mathbb{B}$ as the unique canonical binary string whose elements (bits) represent coefficients of the number with respect to powers of 2. We define $bdec: \mathbb{B} \rightarrow \mathbb{N}$ as the corresponding inverse, in other words the **b**inary **dec**oding that inverts $benc$. We assume this encoding is familiar to readers, so we do not explain it further.
+There is just one technical matter to attend to. Under standard implementations, the binary encoding/decoding is not unique. For example, the string $\langle 1110 \rangle$ corresponds to the natural number $13$ as shown above — but so do $\langle 01110 \rangle$ and $\langle 001110 \rangle$. Things will go more smoothly if we can guarantee invertibility. And this is very simple to achieve by requiring the encoding to map onto $\mathbb{B}$, rather than into $\Sigma^{*}$. Put another way, the restriction to canonical binary strings is a convenience that makes it easier to guarantee invertibility.
 
 ## Stack Encoding/Decoding
 
@@ -123,25 +151,27 @@ Every positive integer can be represented as a product of primes. The representa
 28 = 2 \cdot 2 \cdot 7 = 2 \cdot 7 \cdot 2
 ```
 
-But, because integer multiplication is commutative, the order of factors does not matter. How many times each prime occurs in the product — its **multiplicity** — is sufficient to uniquely define the value. For $28$, the prime $2$ has multiplicity $2$ (occurs twice in the factorization), and the prime $7$ has multiplicity $1$ (and all other primes have multiplicity $0$). 
+But, because integer multiplication is commutative, the order of factors does not matter. How many times each prime occurs in the product — its **multiplicity** — is sufficient to uniquely define the value. For $28$, the prime $2$ has multiplicity $2$ (occurs twice in the factorization), and the prime $7$ has multiplicity $1$ (and all other primes have multiplicity $0$).
 
-We define a canonical prime factorization by the multiplicities of every prime, with the primes written in ascending order; for example:
+We define a canonical prime factorization as follows. Let $\vec{p} = (2, 3, 5, \ldots)$ be the sequence of primes in ascending order. We define a **multiplicity vector** $\vec{m}$ as a sequence of nonnegative integers which is eventually $0$ — in other words there exists some $K$ such that $m_k = 0$ for all $k > K$. There is a natural mapping from multiplicity vectors to integers representing the prime decomposition:
 
 ```math
-28 = (2^2) \cdot (3^0) \cdot (5^0) \cdot (7^1) \cdot (11^0) \cdot (13^0) \ldots
+n = \Pi_{k=1}^\infty (p_k)^{m_k}
 ```
 
-Note that the primes are well-ordered. There is a least element ($2$), and for each prime $p_k$ there is a well-defined next prime $p_{k+1}$. Therefore, it is possible to represent a given integer by a vector of the multiplicities of the primes in its prime factorization; the $k^{\text{th}}$ value in the array represents the multiplicity of the $k^{\text{th}}$ prime. The multiplicity vector for $28$ is shown below:
+For example,
 
 ```math
 \begin{matrix}
-           & p_1 = 2  & p_2 = 3 & p_3 = 5  & p_4 = 7 & p_5 = 11 & p_6 = 13 & \ldots & \\
-    28 = ( &    2,    &    0,   &    0,    &    1,   &    0,   &     0,   & \ldots & )
+                    & p_0 = 2  & p_1 = 3 & p_2 = 5  & p_3 = 7 & p_4 = 11 & p_5 = 13 & \ldots & \\
+    \vec{m}(28) = ( &    2,    &    0,   &    0,    &    1,   &    0,   &     0,   & \ldots & )
 \end{matrix}
 
-Every such multiplicity vector $\hat{m}$ is eventually 0. That is, for every $\hat{m}$ there exists some $K$ such that $\hat{k} = 0$ for all $k > K$. Therefore, there is always a finite vector which can represent all of the nonzero multiplicities — one must include all multiplicities up to the last (greatest) prime whose multiplicity is nonzero; but none after that are needed. In the case of $28$, this finite multiplicity vector would be $(2,0,0,1)$.
+The multiplicity vector representation of a positive integer is unique, because
+* every positive integer can be uniquely expressed as the product of a multiset of primes, and
+* the multiplicity vector corresponds invertibly to a multiset
 
-The finite multiplicity vector representation of an integer is not an encoding, because it is a sequence of integers (rather than a sequence over the binary alphabet). However, it is possible to map the finite multiplicity vector representation of an integer into such a string. The next section formalizes the key idea, which is to define an encoding by composing two mappings. First, each integer is mapped to its finite multiplicity vector; next, the finite multiplicity vector is mapped to a canonical binary string by concatenating the stack encodings of each of the multiplicities.
+Now, the multiplicity vector an integer is not an encoding, because it maps to a sequence of counts (nonnegative integers) rather than a sequence of bits. However, in the last section, we saw that the stack encoding gives a way to map every count to a sequence of bits. The next section formalizes the key idea, which is to define an encoding by combining two mappings. First, each integer is mapped to its finite multiplicity vector; next, the finite multiplicity vector is mapped to a canonical binary string by concatenating the stack encodings of each of the multiplicities.
 
 # Definition
 
@@ -149,69 +179,7 @@ The finite multiplicity vector representation of an integer is not an encoding, 
 
 # Some Properties
 
-# Final Thoughts
 
-# Simple Permutations
-
-A permutation is a 1-1 mapping from a set onto itself; in other words, an invertible rearrangement.
-
-## Finite Permutations
-
-
-
-## "Simple" Infinite Permutations
-
-This section defines and gives examples of various "simple" families of permutations on the integers. In the final subsection we will share a conjecture as to what it means for a countably infinite permutation to be "simple".
-
-### Identity but with finite exceptions
-
-The finite permutation $P$ given earlier can be lifted into a corresponding permutation on the space of all integers by defining
-
-```math
-P^{\infty} = \begin{cases}
-  P(n) & \text{ if } n \in Domain(P) \\
-  n    & \text{ otherwise }
-\end{cases}
-```
-
-In the essential ways, $P^{\infty}$ behaves the same as $P$. And the situation is the same for every infinite permutation that has a finite number of non-fixed points — its behavior is entirely captured by the corresponding finite permutation. Note that the identity permutation belongs to this family — the set of non-fixed points is empty!
-
-### Infinite products of 1- and 2-cycles
-
-Like finite permutations, infinite permutations can have cycles. Consider the following permutations on the set of (positive and negative) integers:
-
-```math
-\sigma(n) = \begin{cases}
-  n + 1 & \text{ if n is even} \\
-  n - 1 & \text{ if n is odd}
-\end{cases}
-```
-
-This parity-flipping permutation can be represented as the infinite product of 2-cycles: $\sigma = \ldots (-2,-1) (0,1) (2,3) \ldots$. 
-
-The sign-flipping permutation has one fixed point but otherwise consists of 2-cycles:
-
-```math
-\nu(n) = -n \\
-\\
-\nu = (0) (1,-1) (2,-2) \ldots
-```
-
-Up until now, all the permutations we have considered share the property that for some global $\Delta > 0$, $|P(n) - n| < \Delta$. The parity-flipping permutation $\nu$ is a counterexample: it is a very simple mapping with no upper bound to the distance between an element and its image under $\nu$. Finally, we note that the identity permutation belongs to this family — it can be represented by an infinite product of 1-cycles!
-
-### Shift permutations
-
-Unlike finite permutations, permutations on countably infinite sets do not have to produce any cycles at all. Consider the following shift-by-1 permutation:
-
-```math
-\rho_1(n) = n + 1
-```
-
-The orbit of every integer $k$ is the set $\{ k, k+1, \ldots \}$. There are no cycles; or put differently, there is 1 cycle of infinite length.
-
-It is instructive to consider the shift permutation when the shift constant is larger than 1. For example, consider $\rho_6(n) = n + 6$. The orbit of $0$ is $\{0, 6, 12, \ldots \}$. The orbits of $1$, $2$, $3$, $4$, and $5% do not overlap with the orbit of $0$, nor with each other. But $6$ is different — the orbit of $6$ contains all the same values as the orbit of $0$, except for $0$ itself. Formally, we could say that (the orbit of) $6$ _eventually agrees_ with the orbit of $0$ (and with $-6$, and with $12$, etc..). In fact, we could partition the integers into 6 classes, depending on whether their orbit eventually agrees with the orbit of $0$, $1$, $2$, $3$, $4$, or $5$. If we agreed to call each element of that partition a cycle (of infinite length), then we could say that $\rho_6$ is represented by a finite product of 6 infinite cycles. (Readers familiar with finite groups will immediately note the connection with $\mathbb{Z}_6$).
-
-We finally note that the identity permutation belongs to the class of shift permutations; it is simply that the shift constant is zero!
 
 ### A formal definition of "simple"?
 
