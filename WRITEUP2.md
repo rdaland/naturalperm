@@ -52,10 +52,11 @@ We will use the following, countably infinite sets throughout the remainder of t
 
 We will abuse notation slightly by referring to the following mappings, without regard to their domains.
 
-| shift-by-k      | $\sigma_k(n)$ | $n \rightarrow n + k$ |
-| multiply-by-k   | $\mu_k(n)$    | $n \rightarrow k \cdot n |
+| shift-by-k      | $\sigma_k(n)$ | $n \rightarrow n + k$                            |
+| :--             |     :-:       | :--                                              |
+| multiply-by-k   | $\mu_k(n)$    | $n \rightarrow k \cdot n                         |
 | parity-flipping | $\rho(n)$     | $n \rightarrow n + 1$ if n is even, else $n - 1$ |
-| sign-flipping   | $\phi(n)$     | $n \rightarrow -n$ |
+| sign-flipping   | $\phi(n)$     | $n \rightarrow -n$                               |
 
 ## Invertibility
 
@@ -70,7 +71,7 @@ The "same" mapping might be a permutation or not, depending on its domain. Let u
 The parity-flipping and sign-flipping mappings define very simple permutations on the integers. In both cases, the permutation can be written as the product of (mostly) 2-cycles:
 
 ```math
-\rho = \ldots (-2,-1) (0,1) (2,3) \ldots
+\rho = \ldots (-2,-1) (0,1) (2,3) \ldots \\
 \phi = (0) (1,-1) (2,-2) \ldots
 ```
 
@@ -82,12 +83,12 @@ A final class of simple infinite permutations consists of mappings which map an 
 
 ```math
 \pi^{\infty} = \begin{cases}
-  \pi(n) & \text{ if } n \in Domain(\pi) \\
-  n    & \text{ otherwise }
+  \pi(n) & \text{| } n \in Domain(\pi) \\
+  n      & \text{| otherwise }
 \end{cases}
 ```
 
-By construction, this lifted mapping is the identity function everywhere except on the domain of $\pi$. In most interesting ways, these two permutations behave the same. The cycles of $ \pi^{\infty} $ are the cycles of $\pi$, plus fixed points for every other element which is not in the domain of $\pi$. The nontrivial mappings of $\pi$ and $ \pi^{\infty} $ are the same. So every infinite permutation in this class can be identified by the corresponding finite permutation.
+By construction, this lifted mapping is the identity function everywhere except on the domain of $\pi$. In most interesting ways, these two permutations behave the same. The cycles of $\pi^{\infty}$ are the cycles of $\pi$, plus fixed points for every other element which is not in the domain of $\pi$. The nontrivial mappings of $\pi$ and $\pi^{\infty}$ are the same. So every infinite permutation in this class can be identified by the corresponding finite permutation.
 
 We have not formally defined what is meant by a nonsimple mapping yet, but we have given some examples above which are meant to illustrate intuitively what makes a mapping simple even if it is on an infinite set. In the next section we turn to developing the machinery for specifying a nonsimple mapping on the natural numbers.
 
@@ -97,7 +98,7 @@ We define an encoding as an invertible mapping from a countably infinite set ont
 
 ## Canonical Binary Strings
 
-Let the binary alphabet be $ \Sigma = \{ 0,1 \} $. Further, let $\Sigma^{*}$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+Let the binary alphabet be $\Sigma = \{ 0,1 \}$. Further, let $\Sigma^{*}$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
 * $s = \langle 0 \rangle$
 * the initial/leftmost/most significant bit of $s$ is a $1$
 
@@ -109,7 +110,7 @@ Notation: We enclose strings with angle brackets, but not individual characters 
 
 # Encodings
 
-For the purpose of this writeup, an **encoding** is an invertible mapping from a (countably infinite) set $X$ onto the set of canonical binary strings $\mathbb{B}$, and a **decoding** is the corresponding inverse. Note that we use the term "onto" in the technical sense that the image of $X$ must cover $\mathbb{B}$. In other words, a mapping $xenc$ can only be an encoding if for every canonical binary string $b$, there exists some element $n$ such that $xenc(n) = b$. This writeup will render strings left-to-right, with the most significant bits leftmost. (We will explain the notion of significant bits more after giving some concrete examples of encodings and decodings.)
+For the purpose of this writeup, an **encoding** is an invertible mapping from a (countably infinite) set $X$ onto the set of canonical binary strings $\mathbb{B}$, and a **decoding** is the corresponding inverse. Note that we use the term "onto" in the technical sense that the image of $X$ must cover $\mathbb{B}$. In other words, a mapping `xenc` can only be an encoding if for every canonical binary string $b$, there exists some element $n$ such that $xenc(n) = b$. This writeup will render strings left-to-right, with the most significant bits leftmost. (We will explain the notion of significant bits more after giving some concrete examples of encodings and decodings.)
 
 ## Binary Encoding/Decoding
 
@@ -125,7 +126,7 @@ The integer $n$ can equivalently be represented as a sum of all powers of 2 up t
 13 = (1 \cdot 2^3) + (1 \cdot 2^2) + (0 \cdot 2^1) + (1 \cdot 2^0)
 ```
 
-The general idea behind the **b**inary **enc**oding ($benc$) is to identify the integer (e.g. $13$) with the sequence of coefficients (aka bits). The corresponding binary decoder simply maps the digit sequence back into an integer. This is a highly familiar mapping, familiar to most programmers and mathematicians alike.
+The general idea behind the **b**inary **enc**oding (`benc`) is to identify the integer (e.g. $13$) with the sequence of coefficients (aka bits). The corresponding binary decoder simply maps the digit sequence back into an integer. This is a highly familiar mapping, familiar to most programmers and mathematicians alike.
 
 There are two technical matter to attend to. The first is uniqueness. Under standard implementations, the binary encoding/decoding is not unique. For example, the string $\langle 1110 \rangle$ corresponds to the natural number $13$ as shown above — but so do $\langle 01110 \rangle$ and $\langle 001110 \rangle$. Things will go more smoothly if we can guarantee invertibility. And this is very simple to achieve by requiring the encoding to map onto $\mathbb{B}$, rather than into $\Sigma^{*}$. Put another way, the restriction to canonical binary strings is a convenience that makes it easier to guarantee invertibility. In the next section, we discuss the other technical issue — significance.
 
@@ -138,6 +139,7 @@ For the binary encoding/decoding, significance is easy to explain. Consider $\la
     | bdec( \langle 101 \rangle ) - bdec( \langle 100 \rangle ) | & = & 1 //
     | bdec( \langle 101 \rangle ) - bdec( \langle 111 \rangle ) | & = & 2
 \end{matrix}
+```
 
 We will not offer a general definition of significance here, but this is the general intuition. Changing bits  on one end of the string has the smallest impact on the decoded value; changing bits on the other end of the string has the largest impact on the decoded value. (It is logically possible that an encoding will not have this property, but we will not consider any such encodings here.) The most significant bit is the one from the end of the canonical binary string which has the greatest impact on the decoded value. We will write strings so that the most significant bit is leftmost.
 
@@ -184,7 +186,7 @@ The sequence $\vec{m}$ is defined as the multiplicity vector representation of t
                      & p_0 = 2  & p_1 = 3 & p_2 = 5  & p_3 = 7 & p_4 = 11 & p_5 = 13 & \ldots & \\
     primevec(28) = ( &    2,    &    0,   &    0,    &    1,   &    0,   &     0,   & \ldots & )
 \end{matrix}
-
+```
 
 ## Primefac-Stack Encoding
 
@@ -198,10 +200,11 @@ penc(n) = \sum_{k=imax(\vec{m})}^{0} stack(m_k)
 
 where here summation is interpreted as string concatenation. Here is the familiar example of $28$, shown in tabular form:
 
-| prime        |  7  |  5  |  3  |  2  |
-| :--          | :-: | :-: | :-: | :-: |
-| multiplicity |  1  |  0  |  0  |  2  |
-| stack        | 10  |  0  |  0  | 110 |
+| prime          |  7  |  5  |  3  |  2  |
+| :--            | :-: | :-: | :-: | :-: |
+| ---            | --- | --- | --- | --- |
+| multiplicity   |  1  |  0  |  0  |  2  |
+| stack encoding | 10  |  0  |  0  | 110 |
 
 The primefac-stack encoding of $28$ is the canonical binary string $\langle 1000110 \rangle$.
 
@@ -211,9 +214,9 @@ There is a special case: $\langle 0 \rangle$. We identify this canonical binary 
 
 It is clear that every positive natural number can be encoded to a canonical binary string — the prime factorization exists and is unique, the mapping from prime factorization to multiplicity vector is well-defined, the stack encoding is likewise well-defined, and because the multiplicity vector is eventually zero for every positive integer, there is a maximum index and therefore the resulting string is finite; it must begin with a $1$ because the leftmost bit corresponds to the stack encoding of a multiplicity which is nonzero. We have taken care that the constituent sub-mappings are invertible, so the reader can verify that the primefac-stack mapping is 1-1.
 
-However, to satisfy our definition of encoding, $penc$ must be not only 1-1, but also onto. In other words, we must know that every canonical binary string corresponds to a unique natural number. Fortunately, this is easy to demonstrate informally. Although we have formulated primefac-stack encoding as a particular kind of composition, we have neglected to mention till now that the reason for doing this is parsability. The $0$ tokens are effectively separators, while the length of a contiguous sequence of $1$ tokens indicates the multiplicity. The following code snippet will recover the multiplicity vector from a $penc$-encoded string:
+However, to satisfy our definition of encoding, $penc$ must be not only 1-1, but also onto. In other words, we must know that every canonical binary string corresponds to a unique natural number. Fortunately, this is easy to demonstrate informally. Although we have formulated primefac-stack encoding as a particular kind of composition, we have neglected to mention till now that the reason for doing this is parsability. The $0$ tokens are effectively separators, while the length of a contiguous sequence of $1$ tokens indicates the multiplicity. The following Python code snippet will recover the multiplicity vector from a $penc$-encoded string:
 
-```
+```python
 >>> cbs = "1000110"
 >>> [len(s) for s in cbs.split("0")]
 [1, 0, 0, 2, 0]
@@ -223,15 +226,15 @@ From this multiplicity vector, it is straightforward to recover the integer acco
 
 ## Putting it all together
 
-There is a final bit of bookkeeping to attend to. We have defined an encoder/decoder pair $benc$/$bdec$ which map $\mathbb{N} \leftrightarrow \mathbb{B}$ using the binary power series representation, and another encoder/decoder pair $penc$/$pdec$ which map $\mathbb{Z}^{+} \leftrightarrow \mathbb{B}$ using the prime factorization and stack encoding for prime multiplicities. There is now a slightly awkward issue — what happens to $0$? This element is not defined for $penc$/$pdec$ (because the nonpositive number $0$ cannot be expressed as the product of positive factor). We are aware of three natural options:
-1. exclude $0$ by fiat (apply $benc$/$bdec$ and $penc$/$pdec$ exactly as defined above)
-2. shift the domain to $\mathbb{Z}^{+} and add $1$ before $benc$/subtract $1$ after $bdec$
-2. shift the domain to $\mathbb{N}$ by adding $1$ before $penc$/subtract $1$ after $pdec$
+There is a final bit of bookkeeping to attend to. We have defined an encoder/decoder pair `benc`/`bdec` which map $\mathbb{N} \leftrightarrow \mathbb{B}$ using the binary power series representation, and another encoder/decoder pair `penc`/`pdec` which map $\mathbb{Z}^{+} \leftrightarrow \mathbb{B}$ using the prime factorization and stack encoding for prime multiplicities. There is now a slightly awkward issue — what happens to $0$? This element is not defined for `penc`/`pdec` (because the nonpositive number $0$ cannot be expressed as the product of positive factor). We are aware of three natural options:
+1. exclude $0$ by fiat (apply `benc`/`bdec` and `penc`/`pdec` exactly as defined above)
+2. shift the domain to $\mathbb{Z}^{+} and add $1$ before `benc`/subtract $1$ after `bdec`
+2. shift the domain to $\mathbb{N}$ by adding $1$ before `penc`/subtract $1$ after `pdec`
 
 For aesthetic reasons, we prefer the third option. (The other two options require us to modify our definition of canonical binary string, or violate our own definition of encoding/decoding.) Thus, finally, we define $natperm: \mathbb{N} \rightarrow \mathbb{N}$:
 
 ```math
-natperm(n) = bdec(penc(n + 1))
+natperm(n) = bdec(penc(n + 1))       \\
 natperm^{-1}(n) = pdec(benc(n)) - 1
 ```
 
