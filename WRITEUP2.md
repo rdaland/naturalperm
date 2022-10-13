@@ -240,16 +240,105 @@ natperm^{-1}(n) = pdec(benc(n)) - 1
 
 # Exploration
 
+Here is a table showing the orbit of each integer from 0 up to 50. Most orbits "escape" (operationally defined here as exceeding 100,000); in this case, the sequence of elements is shown up to but not including the first escaped element. However if the orbit is a cycle, this is shown with the cycle notation (elements enclosed in parentheses).
+
+| n   | orbit                                   |
+| :-- |  :--                                    |
+| 0   |   (0)                                   |
+| 1   |   (1)                                   |
+| 2   |   (2)                                   |
+| 3   |   (3)                                   |
+| 4   |   (4)                                   |
+| 5   |   (5)                                   |
+| 6   |   (6, 8)                                |
+| 7   |   (7)                                   |
+| 8   |   (8, 6)                                |
+| 9   |   (9)                                   |
+| 10  | 16, 64, 68, 514, ...                    |
+| 11  |   (11)                                  |
+| 12  | 32, 34, 20, 18, 128, 16386, ...         |
+| 13  |   (13, 17)                              |
+| 14  | 10, 16, 64, 68, 514, ...                |
+| 15  |   (15)                                  |
+| 16  | 64, 68, 514, ...                        |
+| 17  |   (17, 13)                              |
+| 18  | 128, 16386, ...                         |
+| 19  |   (19)                                  |
+| 20  | 18, 128, 16386, ...                     |
+| 21  | 33, 129, 137, 1029, ...                 |
+| 22  | 256, ...                                |
+| 23  |   (23)                                  |
+| 24  | 12, 32, 34, 20, 18, 128, 16386, ...     |
+| 25  | 65, 69, 41, 37, 257, 32773, ...         |
+| 26  | 14, 10, 16, 64, 68, 514, ...            |
+| 27  |   (27, 35)                              |
+| 28  | 512, 1038, ...                          |
+| 29  | 21, 33, 129, 137, 1029, ...             |
+| 30  | 1024, 16396, ...                        |
+| 31  |   (31)                                  |
+| 32  | 34, 20, 18, 128, 16386, ...             |
+| 33  | 129, 137, 1029, ...                     |
+| 34  | 20, 18, 128, 16386, ...                 |
+| 35  |   (35, 27)                              |
+| 36  | 2048, ...                               |
+| 37  | 257, 32773, ...                         |
+| 38  | 66, ...                                 |
+| 39  |   (39)                                  |
+| 40  | 4096, ...                               |
+| 41  | 37, 257, 32773, ...                     |
+| 42  | 8192, ...                               |
+| 43  | 67, 259, 275, 2059, ...                 |
+| 44  | 22, 256, ...                            |
+| 45  | 513, ...                                |
+| 46  | 16384                                   |
+| 47  |   (47)                                  |
+| 48  | 24, 12, 32, 34, 20, 18, 128, 16386, ... |
+| 49  | 25, 65, 69, 41, 37, 257, 32773, ...     |
+
+Note that many of the rows contain overlapping information. For example, the $22$ row shows $22 \rightarrow 256 -> rightarrow \ldots$. As it turns out, $44 /rightarrow 22$ so the information in the $44$ row is a proper superset of the information in the $22$ row. The following is an alternate representation of `natperm`, in which (possibly infinite) cycles have been truncated as $\ldots$ once their orbits escape:
+
+```math
+natperm = \begin{matrix}
+    (0)(1)(2)(3)(4)(5)(6, 8)(7)(9)(26, 14, 10, 16, 64, 68, 514, \ldots)(11)     \\
+    (48, 24, 12, 32, 34, 20, 18, 128, 16386, \ldots)(13, 17)(15)(19)            \\
+    (29, 21, 33, 129, 137, 1029, \ldots)(44, 22, 256, \ldots)(23)               \\
+    (49, 25, 65, 69, 41, 37, 257, 32773, \ldots)(27, 35)(28, 512, 1038, \ldots) \\
+    (30, 1024, 16396, \ldots)(31)(33, 129, 137, 1029, \ldots)(36, 2048, \ldots) \\
+    (41, 37, 257, 32773, \ldots)(38, 66, \ldots)(39)(40, 4096, \ldots)          \\
+    (42, 8192, \ldots)(43, 67, 259, 275, 2059, \ldots)(45, 513, \ldots)         \\
+    (46, 16384, \ldots)(47) \cdot \ldots
+\end{pmatrix}
+
+(The product is arranged in ascending order according to the least element of each cycle, without repeating elements that have been covered in an earlier cycle.) 
+
 # Some Properties
 
+## Fixed Points and Cycles
 
+Informally, we observe that the likelihood of being a fixed point is high for the smallest numbers, and appears to decrease rapidly as numbers grow beyond $9$. All fixed points greater than $9$ are prime numbers, however not all prime numbers are fixed points (for example $41 \rightarrow 37$.
 
-### A formal definition of "simple"?
+The observed 2-cycles are only $(6, 8)$ and $(27, 35)$. We note that both of these consist of simple composite numbers consisting of just 1 or 2 primes; however this is too small a sample to say much about. There are no 3-cycles among the first hundred integers (3-cycles are sometimes diagostic of chaos in iterated function systems).
 
-The permutations given in this section are all "simple" in some sense. While we are not prepared to rigorously define "simple", we note that all of the examples given above fall into one of two classes:
-* infinite product of finite cycles
-* finite product of infinite cycles
+## Parity
 
-Of course, a finite permutation is the finite product of finite cycles. This leaves a gap — a permutation which is the infinite product of infinite cycles. It is tempting to speculate that a "complex" permutation is exactly one which fills this gap. (This need not exclude finite cycles.)
+It seems that all elements of a cycle have the same parity (all elements are even, or all elements are odd). We leave it as an exercise to the reader to determine whether this fact falls out from the way the mapping is defined.
+
+## Ascent, Descent, and Escape
+
+The (potentially infinite) longer cycles generally exhibit both ascent and descent before they escape. Analysis not shown here indicates that some orbits exhibit super-exponential growth (that is, $\frac{m_{k+1}}{m_k} > \frac{m_k}{m_k-1}$ for most values of $k$ until iteration becomes infeasible). Quick and informal analysis (also not shown here) suggests that more or less the same property holds for the inverse. Thus, it appears that most orbits which include small integers (less than 100) are "locally parabolic" about the small integer.
+
+# Conclusion
+
+This writeup has offered a mechanism to define a computable permutation on the natural numbers. The basic idea is to define an encoding as an invertible mapping from the natural numbers (or positive integers) onto the space of canonical binary strings. The forward map is called the encoder; its inverse is a decoder. With two **distinct** encodings, it is straightforward to define a permutation on the natural numbers by composing one encoder with the non-matching decoder. This writeup constructed such a permutation using binary representation for one encoding, and prime factorization with stack encoding for the other. A working code implementation with unit tests is given in this repo.
+
+## Towards a definition of nonsimple 
+
+Every finite permutation (permutation on a finite set) can be represented as the finite product of finite cycles.
+
+Of the "simple" countably infinite permutations defeined earlier, the parity-flipping and sign-flipping permutations can be represented as an infinite product of finite cycles.
+
+Conversely, the shift-by-k permutation can be represented as a finite product of infinite cycles.
+
+This leaves a gap — a permutation which is the infinite product of infinite cycles. It is tempting to speculate that a nonsimple permutation is exactly one which fills this gap. (Such a permutation could include finite cycles, and might even include infinitely many of them.) We have not shown here that the offered permutation `natperm` actually has this property. It is logically possible that besides a few fixed points and 2-cycles, `natperm` actually consists of one very large derangement. As it is computationally prohibitive to factor very large numbers, and we have seen that most orbits "escape" rapidly to large numbers, this question must await further computational investigation or richer theoretical analysis.
 
 # References
