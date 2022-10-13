@@ -51,13 +51,14 @@ def orbit(x: int, escape: int = REALLY_BIG_NUMBER, f = natperm) -> List[Optional
         orb.append(f(orb[-1]))
         if orb[-1] == orb[0]:
             return tuple(orb[:-1])
-    return orb[1:]
+    return orb[1:-1]
 
 
 def main():
-    print(f"n\tnp(n)\tnpinv(n)")
+    print(f"| n   | orbit |")
+    print(f"| :-- |  :--  |")
     for i in range(50):
-        print(f"{i}\t{natperm(i)}\t{natperminv(i)}")
+        print(f"| {i}  | {orbit(i)} |")
 
 
 if __name__ == '__main__':
