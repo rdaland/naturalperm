@@ -100,7 +100,7 @@ We define an encoding as an invertible mapping from a countably infinite set ont
 
 ## Canonical Binary Strings
 
-Let the binary alphabet be $\Sigma = \{ 0,1 \}$. Further, let $\Sigma^*$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+Let the binary alphabet be $\Sigma = \{ 0,1 \}$. Further, let $\Sigma^{*}$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
 * $s = \langle 0 \rangle$
 * the initial/leftmost/most significant bit of $s$ is a $1$
 
@@ -200,7 +200,7 @@ We must be a little careful with the construction, to obey the convention that t
 penc(n) = \bigoplus_{k=imax(\vec{m})}^{0} stack(m_k)
 ```
 
-where here summation is interpreted as string concatenation. Here is the familiar example of $28$, shown in tabular form:
+where here the oplus sign is meant as string concatenation. Here is the familiar example of $28$, shown in tabular form:
 
 | prime          |  7  |  5  |  3  |  2  |
 | :--            | :-: | :-: | :-: | :-: |
@@ -310,6 +310,7 @@ natperm = \begin{matrix}
     (42, 8192, \ldots)(43, 67, 259, 275, 2059, \ldots)(45, 513, \ldots)         \\
     (46, 16384, \ldots)(47) \cdot \ldots
 \end{matrix}
+```
 
 (The product is arranged in ascending order according to the least element of each cycle, without repeating elements that have been covered in an earlier cycle.) 
 
