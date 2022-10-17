@@ -1,260 +1,347 @@
+# Natural Permutations
 
-# Introduction
+A permutation is a mapping which reorders elements of a set. The set can be finite, or infinite. There are many "simple" permutations on infinite sets — for example, the identity permutation simply maps an element to itself (no reordering). This writeup takes up the challenge of defining a non-simple permutation on the natural numbers. The approach is to define an encoding as an invertible mapping from the natural numbers onto a subspace of _canonical binary strings_. The permutation is defined by composing one encoding with the inverse of a completely different one. This writeup includes exposition, as well as some limited exploration and analysis.
 
-A permutation is a 1-1, onto mapping from a set to itself, in other words an invertible re-arrangement of the set elements. Permutations are well-studied on finite sets, such as Z_n (the set of integers modulo n). A key behavior is a **cycle** — a sequence of elements which repeat under iteration. For example, consider the following mapping on Z_6:
+# Finite Permutations
 
-```
-P:
-1 —> 2
-2 —> 4
-3 —> 5
-4 —> 1
-5 —> 3
-6 —> 6
-```
+A permutation $\pi : X \rightarrow X$ is a 1-1 mapping from a set onto itself. In other words, it is an invertible mapping whose image covers the domain.
 
-This permutation generates 3 cycles: `(124)`, `(35)`, and `(6)`. The notation `(124)` means that P maps 1 to 2, 2 to 4, and 4 back to 1. Permutations on finite sets always give rise to cycles; and can be uniquely identified with their cycles. The permutation above can be compactly represented `P = (124)(35)(6)`.
+Every finite permutation can be modeled as a permutation on the integers modulo n, $\mathbb{Z}_n = \{ 0, 1, \ldots, n-1 \}$. Here is an example on $\mathbb{Z}_6$:
 
-There are various "simple" permutations which can be defined in a nearly set-independent way. For example, the identity permutation simply maps an element to itself. Finite sets can always be identified with Z_n; and then it is straightforward to defined to define a "shift-by-1" permutation `P(k) = k + 1 (modulo n)`. This will always yield a single cycle of length `n`, which is the longest a cycle can be for a finite set.
-
-For countably infinite sets, some things are different, while others are the same. For example, the shift-by-one permutation `f(n) = n + 1` can also be defined on the integers. However, unlike with the finite set Z_n, iteration of this permutation does not yield a cycle. Iterating `k` times simply adds `k` to the integer; because the integers are endless, one can do this indefinitely without repeating. This permutation has no fixed points, and no cycles whatsoever.
-
-There is another class of 'simple' permutations on the natural numbers — mappings which are the same as the identity mapping, except on a finite set of elements. This class is not importantly different from the permutation on the non-identity elements. 
-
-These facts led me to wonder — is there an 'interesting' permutation on the natural numbers — one which cannot be reduced to a finite permutation alone? It is worth noting that the structure of the natural numbers already rules out "shift-by-k" permutations. This because permutations must be invertible. For the purposes of this writeup, we will say that the natural numbers begin with 1 and go upwards (0 is excluded). For the shift-by-1 mapping f(n) = n + 1, the minimal element 1 lacks an inverse — `f^-1(1)` is undefined. Therefore `f` is not truly a permutation. The same logic applies more generally — if a mapping is nondecreasing (or nonincreasing) everywhere, it must have at least one element that lacks an inverse (unless it is the identity mapping, of course). Put more simply, any nontrivial permutation on the natural numbers must map some numbers downwards, and an equal amount of numbers upwards. The goal of this project is to implement just such an 'interesting' permutation.
-
-# Approach
-
-There is a natural, invertible mapping between nonnegative integers and strings over the alphabet '0' and '1' — the canonical binary representation. For example, the canonical binary representation of the integer 13 is "1101": 1*2^3 + 1*2^2 + 0*2^1 + 1*2^0. This writeup will refer to this mapping as `benc` (for **b**inary **enc**oding), and the inverse mapping (from canonical binary strings to integers) as `bdec` (for **b**inary **dec**oding).
-
-Note that binary string representations of integers are not unique. For example, "01101" corresponds to same integer as "1101" does; it simply contains an unnecessary leading "0". We restrict the mappings to canonical binary strings so that `benc` is onto (and `bdec` is 1-1).
-
-The approach take here is to look for a *different* invertible mapping between canonical binary strings and the integers. For reasons that will become clear momentarily, let us refer to these hypothetical mapping as `penc` and `pdec`. (This writeup will always use `enc` to mean mapping from integers to canonical binary strings, and `dec` to mean mapping from canonical binary strings to integers.) Then we can achieve an invertible mapping from the integers to the integers by composing one encoding method with the other decoding method:
-
-```
-naturalperm(n) = pdec(benc(n))
-naturalperm^-1(n) = bdec(penc(n))
+```math
+\pi = 
+    \begin{pmatrix}
+        0 & \rightarrow & 0 \\
+        1 & \rightarrow & 2 \\
+        2 & \rightarrow & 4 \\
+        3 & \rightarrow & 5 \\
+        4 & \rightarrow & 1 \\
+        5 & \rightarrow & 3
+    \end{pmatrix}
 ```
 
-Of course, if the other set of mappings is chosen in a way that "too close" to `benc`/`bdec`, it is possible that this would result in a trivial permutation (such as the identity permutation). So the goal of finding a permutation on the natural integers can be achieved by finding a `penc`/`pdec` pair that is different enough from `benc`/`bdec` to produce a nontrivial permutation.
+Note that $\pi(0) = 0$, in other words $\pi$ maps $0$ to itself. This means that $0$ is a **fixed point** of $\pi$.
 
-The general approach we will take here is for `penc` to encode an integer as a string of 0's and 1's in a way that represents its prime factorization. Some bookkeeping and technical details are required to ensure an invertible mapping, and these are the topic of the next section.
+The **orbit** of an element is the sequence of elements that is generated by applying the permutation repeatedly, so that the output of one application becomes the input for the next. Let us examine the orbit of $3$ under $\pi$:
 
-# Prime factorization coding
-
-The general idea is to generate an invertible mapping by exploiting the prime factorization of an integer. The prime multiplicities are encoded as a sequence of '1's using stack encoding, and '0' is used as a separator. 
-
-## Stack encoding
-
-The Peano axioms define the natural numbers according to a special element '0' and the successor relation 'S'. For example, 1 is defined by a single application of the successor relation, while 2 is defined by 2 applications:
-
-```
-1: "S0"        # 1 is the successor of 0
-2: "SS0"       # 2 is the successor of 1, i.e. the successor of the successor of 0
-...
-5: "SSSSS0"    # 5 is the successor of the successor of ... the successor of 0
+```math
+\pi: 3 \rightarrow 5 \rightarrow 3 \rightarrow 5 \rightarrow \ldots
 ```
 
-This can be thought of as the "stack-of-plates" representation of a nonnegative integer. This is closely related to what I will refer to as the stack encoding. The stack encoding of a nonnegative integer is a sequence of repeated '1's, where the integer value is encoded by the number of repeats. For example the stack encoding of 0 is the empty string, the stack encoding of 1 is "1", and the stack encoding of 5 is "11111". Observe that the stack encoding is invertible (when the integer 0 is included in the domain).
+$\pi$ maps $3$ to $5$, and $5$ back to $3$. When the orbit of an element returns to the original element, it is called a **cycle**. This cycle can be efficiently represented with the cycle notation $(35)$; it is called a 2-cycle because the orbit passes through 2 elements before it repeats. Fixed points are 1-cycles.
 
-## Prime factorization
+Besides $(0)$ and $(35)$, $\pi$ also has a 3-cycle, $(124)$. Note that the number of elements in the domain of $\pi$, $| \mathbb{Z}_6 | = 6$, is equal to the sum of the lengths of the cycles of $\pi$. It turns out that every finite permutation can be uniquely represented as the product of its cycles, which form a partition over the domain. For example, the cycle notation for $\pi$ is $(0)(124)(36)$.
 
-It is well-known that all positive integers can be expressed as the product of primes. Moreover, the prime factorization is unique, up to the order of factors. Here are a couple of examples:
+The reasons this writeup has gone into such detail on the integers modulo $n$ are
+1. every finite permutation is isomorphic to a permutation on $\mathbb{Z}_n$ for some $n$
+2. the notions of orbit, cycle, and partition are relevant for permutations on infinite sets
 
+# Common
+
+## Sets
+
+We will use the following, countably infinite sets throughout the remainder of this writeup:
+
+| name                     | symbol           | values                              |
+| :--                      | :--              | :--                                 |
+| natural numbers          | $\mathbb{N}$     | $\{ 0, 1 ,2, \ldots \}$             |
+| integers                 | $\mathbb{Z}$     | $\{ \ldots, -1, 0, 1, 2, \ldots \}$ |
+| positive natural numbers | $\mathbb{Z}^{+}$ | $\{1,2,\ldots\}$                    |
+
+## Mappings
+
+We will abuse notation slightly by referring to the following mappings, without regard to their domains.
+
+| shift-by-k      | $\sigma_k(n)$ | $n \rightarrow n + k$                            |
+| :--             |     :-:       | :--                                              |
+| multiply-by-k   | $\mu_k(n)$    | $n \rightarrow k \cdot n$                        |
+| parity-flipping | $\rho(n)$     | $n \rightarrow n + 1$ if n is even, else $n - 1$ |
+| sign-flipping   | $\phi(n)$     | $n \rightarrow -n$                               |
+
+## Invertibility
+
+The requirement of invertibility imposes strong constraints on whether a mapping constitutes a permutation. 
+
+For example, the doubling function $\mu_2(n) = 2n$ cannot define a permutation on the integers, because the image does not cover the entire set. For example, the value $3$ does not have an inverse. The only values of $k$ for which $\mu_k$ defines a permutation on the integers are $k = 1$ (the identity mapping) and $k = -1$ (the sign-flipping map).
+
+The "same" mapping might be a permutation or not, depending on its domain. Let us consider the shift-by-one mapping, $\sigma_1(n) = n + 1$. If the domain is the integers $\mathbb{Z}$, $\sigma_1$ is invertible — to obtain the inverse for any $n$, simply subtract 1 from it. However, when the domain is restricted to the natural numbers , it is not invertible. This is because the natural numbers have a least element, $0$. Subtraction from the least element is undefined; or put another way, $-1$ does not belong to $\mathbb{N}$. Even though the cardinality of $\mathbb{N}$ and $\mathbb{Z}$ is the same, the set of permutations on the natural numbers is much more restricted than for the integers as a whole.
+
+## Simple Infinite Permutations
+
+The parity-flipping and sign-flipping mappings define very simple permutations on the integers. In both cases, the permutation can be written as the product of (mostly) 2-cycles:
+
+```math
+\begin{matrix}
+    \rho & = & \ldots (-2,-1) (0,1) (2,3) \ldots \\
+    \phi & = & (0) (1,-1) (2,-2) \ldots
+\end{matrix}
 ```
-18 = 3^2 * 2^1                            # [2,1]
-13 = 13^1 * 11^0 * 7^0 * 5^0 * 3^0 * 2^0  # [1,0,0,0,0,0]
+
+Unlike finite permutations, it is not guaranteed that infinite permutations can be expressed as the product of cycles — at least, not without modifying our understanding of cycle. If we consider the shift-by-one permutation, The orbit of every integer $k$ is the set $\{ k, k+1, \ldots \}$. There are no repeating elements... 
+
+It is instructive to consider the shift permutation when the shift constant is larger than 1. For example, consider $\rho_6(n) = n + 6$. The orbit of $0$ is $\{0, 6, 12, \ldots \}$. The orbits of $1$, $2$, $3$, $4$, and $5$ do not overlap with the orbit of $0$, nor with each other. But $6$ is different — the orbit of $6$ contains all the same values as the orbit of $0$, except for $0$ itself. Formally, we could say that (the orbit of) $6$ _eventually agrees_ with the orbit of $0$ (and with $-6$, and with $12$, etc..). In fact, we could partition the integers into 6 classes, depending on whether their orbit eventually agrees with the orbit of $0$, $1$, $2$, $3$, $4$, or $5$. If we agreed to call each class in that partition a cycle (of infinite length), then we could say that $\rho_6$ is represented by a finite product of 6 infinite cycles. (In fact, this is one way to construct of $\mathbb{Z}_6$ from the integers.)
+
+A final class of simple infinite permutations consists of mappings which map an element to itself for all but a finite number of elements. For a given finite permutation $\pi$, it is straightforward to "lift" it to a corresponding permutation on an infinite set, like so:
+
+```math
+\pi^{\infty} = \begin{cases}
+  \pi(n) & \text{| } n \in Domain(\pi) \\
+  n      & \text{| otherwise }
+\end{cases}
 ```
 
-The order of primes is fixed, just as is the order of powers of 2. Thus, we can invertibly encode the prime factorization of an integer by the sequece of prime multiplicities. (Just as with just as with the binary string encoding, the canonical sequence must be defined to exclude all primes above the greatest prime with a nonzero multiplicity; for example we do not include the term "17^0" in the prime factorization of 13).
+By construction, this lifted mapping is the identity function everywhere except on the domain of $\pi$. In most interesting ways, these two permutations behave the same. The cycles of $\pi^{\infty}$ are the cycles of $\pi$, plus fixed points for every other element which is not in the domain of $\pi$. Otherwise, the cycles of $\pi$ and $\pi^{\infty}$ are the same. So every infinite permutation in this class can be identified by the corresponding finite permutation.
 
-## `penc`: combining prime factorization with stack encoding
+We have not formally defined what is meant by a nonsimple mapping yet, but we have given some examples above which are meant to illustrate intuitively what makes a mapping simple even if it is on an infinite set. In the next section we turn to developing the machinery for specifying a nonsimple mapping on the natural numbers.
 
-The trick is to use stack encoding for the prime multiplicities, with '0' as the separators.
+# Encoding
 
-The same examples from above are shown again:
+We define an encoding as an invertible mapping from a countably infinite set onto a space of **canonical binary strings**. A decoding is defined as the corresponding inverse. The general strategy will be to define two unrelated mappings, `benc`/`bdec` and `penc`/`pdec`; then the nonsimple permutation on the natural numbers is defined by composing one encoder with the non-matching decoder.
 
-|----|-------------------------------------|---------------|--------|
-| 18 |                           3^2 * 2^1 |         [2,1] |   1101 |
-| 13 | 13^1 * 11^0 * 7^0 * 5^0 * 3^0 * 2^0 | [1,0,0,0,0,0] | 100000 |
+## Canonical Binary Strings
 
-For the multiplicity list [2,1] in the first line:
-* the leftmost value 2 is stack-encoded with '11' (two 1's)
-* a separator of '0' follows
-* the rightmost value 1 is stack-encoded with '1'
+Let the binary alphabet be $\Sigma = \{ 0,1 \}$. Further, let $\Sigma^{*}$ be the set of finite strings over this alphabet. A string $s \in \Sigma^*$ is in canonical form if any of the following conditions hold:
+* $s = \langle 0 \rangle$
+* the initial/leftmost/most significant bit of $s$ is a $1$
 
-For the multiplicity list [1,0,0,0,0,0] in the second line:
-* the leftmost value 1 is stack-encoded with '1'
-* a separator of '0' follows
-* the next value 0 is stack-encoded with the empty string (0 repeats of '1')
-* a separator of '0' follows
-* the next value of 0 is also stack-encoded with the empty string
-* ...
+(We enclose strings with angle brackets, but not individual characters of the alphabet.) An example of a non-canonical string is $\langle 0101 \rangle$. It is non-canonical because the initial bit is $0$. In general, a canonical binary string can be obtained from a non-canonical one by stripping all leading $0$'s. The canonical binary string that corresponds to $\langle 0101 \rangle$ is $\langle 101 \rangle$. The sole exception is when the string contains no $1$'s; in that case, a single leading $0$ is allowed (to distinguish $\langle 0 \rangle$ from an empty string, which is not a canonical binary string). Formally, we define canonical binary strings as the subset of $\Sigma^{*}$ which is in canonical form:
 
-Because this value is a prime, the total number of separators is equal to the number of primes that are smaller than this value, and there are no other factors; so we get a string of zeros.
+```math
+\mathbb{B} = \{ \langle 0 \rangle \} \cup \{ \langle 1s \rangle \, | \, s \in \{0,1\}^{*} \}
+```
 
-## `pdec`: inverting `penc`
+# Encodings
 
-The fundamental question is, is it guaranteed that every canonical binary string can be interpreted as a `penc`-encoded integer? In other words, is it possible to recover a unique prime factorization from every canonical binary string? The short answer is, yes — because we have taken special care that every mapping discussed here is invertible. As a brief, informal argument, consider that every canonical binary string begins with a '1' and continues with some sequence of '1's and '0's. We can split the string on '0', separating it into a sequence of 1-sequences. The 1-sequences can be of length 0, and this will occur exactly whenever the binary string contains two 0's in a row. Since 0's are different than 1's, the parsing is guaranteed to be unique — one symbol is used to separate stacks, and one symbol is used to indicate the size of each stack. So from every canonical binary string, it is possible to recover some prime factorization. And since integer multiplication commutes, the resulting integer is guaranteed to be 1-1 from the prime factorization.
+For the purpose of this writeup, an **encoder** is an invertible mapping from a (countably infinite) set $X$ onto the set of canonical binary strings $\mathbb{B}$, and a **decoder** is the corresponding inverse. Note that we use the term "onto" in the technical sense that the image of $X$ must cover $\mathbb{B}$. In other words, a mapping `xenc` can only be an encoding if for every canonical binary string $b$, there exists some element $n$ such that $xenc(n) = b$. This writeup will render strings left-to-right, with the most significant bits leftmost. (We will explain the notion of significant bits more after giving some concrete examples of encodings and decodings.)
 
-## A detail: Off by one
+## Binary Encoding/Decoding
 
-The prime factorization theorem holds for positive integers (n > 0). Therefore `penc`/`pdec` encode a mapping from/to the **positive** integers to canonical binary strings. 
+It is well known that a natural number can be represented as a sum over powers of 2. For example,
 
-However, the `benc`/`bdec` encoding does naturally include 0 <—> '0'. The general idea is to define `naturalperm` as the composition of `benc` and `pdec` (or _vice versa_). While the mapping is still invertible if the domain includes 0 and the range does not (or _vice versa_), it will not be a permutation. Fortunately, it is easy to address this issue by adding a shift-by-one operation:
-* `benc(n)` returns the canonical binary string for `n - 1`
-* `bdec(s)` converts s to an integer, and then adds 1 to it
+```math
+13 = 2^3 + 2^2 + 2^0
+```
 
-A similar effect could have been achieved with a shift-by-one operation in `penc`/`pdec`. I opted to do it in `benc`/`bdec` since this generally introduces a smaller perturbation to the binary string representation.
+The integer $n$ can equivalently be represented as a sum of all powers of 2 up to some $k$, each multiplied by a coefficient that is either 0 or 1:
 
-## Another detail: smallest values rightmost
+```math
+13 = (1 \cdot 2^3) + (1 \cdot 2^2) + (0 \cdot 2^1) + (1 \cdot 2^0)
+```
 
-In English, the convention is to render strings left-to-right, and to order binary strings so that the most significant bit is leftmost. I have followed this convention not only for `benc` encoding, but also for `penc` encoding. That is, in the prime mulitplicities list, the primes are sorted so that the highest values occur leftmost; and I ordered the binary string in the same way. This choice was made mostly on the basis of human readability: it has greater parallelism between the string-as-bits and string-as-multiplicity-stacks interpretation; in both cases the most significant base/prime is leftmost.
+The general idea behind the **b**inary **enc**oding (`benc`) is to identify the integer (e.g. $13$) with the sequence of coefficients (aka bits). The corresponding binary decoder simply maps the digit sequence back into an integer. This is a highly familiar mapping, familiar to most programmers and mathematicians alike.
 
-For the implementation of `benc`/`bdec`, it is more convenient to start from the least significant prime. This is because primes can be efficiently enumerated starting from the least one (2). But to process starting from the most significant prime, one must know in advance how many primes are associated with the multiplicity list. There are several options and any of them can be made to work, though some are more elegant than others. It truly is an implementational details, and it is mentioned here only because one must handle it somehow.
+There are two technical matter to attend to. The first is uniqueness. Under standard implementations, the binary encoding/decoding is not unique. For example, the string $\langle 1110 \rangle$ corresponds to the natural number $13$ as shown above — but so do $\langle 01110 \rangle$ and $\langle 001110 \rangle$. Things will go more smoothly if we can guarantee invertibility. And this is very simple to achieve by requiring the encoding to map onto $\mathbb{B}$, rather than into $\Sigma^{*}$. Put another way, the restriction to canonical binary strings is a convenience that makes it easier to guarantee invertibility. In the next section, we discuss the other technical issue — significance.
 
-A key thing is that if the similar "least significant bits rightmost" is shared between the `benc` and `penc` mappings, (and `naturalperm` is defined as the composition of `bdec` and `penc` as defined above), then `naturalperm` has the property that smaller integers will in general be mapped to smaller integers, while larger integers will in general be mapped to larger integers. However, as we will show shortly, it is not an identity map.
+## Significance
 
-# `naturalperm`
+For the binary encoding/decoding, significance is easy to explain. Consider $\langle 101 \rangle$. Changing the rightmost bit has a smaller impact on the decoded value than changing bits further to the left:
 
-For the reader's enjoyment I have rendered the mapping for the first 100 values, along with the inverse.
+```math
+\begin{matrix}
+    | bdec( \langle 101 \rangle ) - bdec( \langle 100 \rangle ) | & = & 1 \\
+    | bdec( \langle 101 \rangle ) - bdec( \langle 111 \rangle ) | & = & 2 
+\end{matrix}
+```
 
-| n  | natperm(n)| natperm^-1 |
-|----|-----------|------------|
-| 1  |         1 |          1 |
-| 2  |         2 |          2 |
-| 3  |         3 |          3 |
-| 4  |         4 |          4 |
-| 5  |         5 |          5 |
-| 6  |         6 |          6 |
-| 7  |         9 |          9 |
-| 8  |         8 |          8 |
-| 9  |         7 |          7 |
-| 10 |        10 |         10 |
-| 11 |        17 |         15 |
-| 12 |        12 |         12 |
-| 13 |        33 |         25 |
-| 14 |        18 |         18 |
-| 15 |        11 |         27 |
-| 16 |        16 |         16 |
-| 17 |        65 |         11 |
-| 18 |        14 |         14 |
-| 19 |       129 |         21 |
-| 20 |        20 |         20 |
-| 21 |        19 |         35 |
-| 22 |        34 |         30 |
-| 23 |       257 |         45 |
-| 24 |        24 |         24 |
-| 25 |        13 |         49 |
-| 26 |        66 |         50 |
-| 27 |        15 |         75 |
-| 28 |        36 |         36 |
-| 29 |       513 |        125 |
-| 30 |        22 |         54 |
-| 31 |      1025 |         81 |
-| 32 |        32 |         32 |
-| 33 |        35 |         13 |
-| 34 |       130 |         22 |
-| 35 |        21 |         33 |
-| 36 |        28 |         28 |
-| 37 |      2049 |         55 |
-| 38 |       258 |         42 |
-| 39 |        67 |         63 |
-| 40 |        40 |         40 |
-| 41 |      4097 |         77 |
-| 42 |        38 |         70 |
-| 43 |      8193 |        105 |
-| 44 |        68 |         60 |
-| 45 |        23 |        175 |
-| 46 |       514 |         90 |
-| 47 |     16385 |        135 |
-| 48 |        48 |         48 |
-| 49 |        25 |        121 |
-| 50 |        26 |         98 |
-| 51 |       131 |        147 |
-| 52 |       132 |        100 |
-| 53 |     32769 |        245 |
-| 54 |        30 |        150 |
-| 55 |        37 |        225 |
-| 56 |        72 |         72 |
-| 57 |       259 |        343 |
-| 58 |      1026 |        250 |
-| 59 |     65537 |        375 |
-| 60 |        44 |        108 |
-| 61 |    131073 |        625 |
-| 62 |      2050 |        162 |
-| 63 |        39 |        243 |
-| 64 |        64 |         64 |
-| 65 |        69 |         17 |
-| 66 |        70 |         26 |
-| 67 |    262145 |         39 |
-| 68 |       260 |         44 |
-| 69 |       515 |         65 |
-| 70 |        42 |         66 |
-| 71 |    524289 |         99 |
-| 72 |        56 |         56 |
-| 73 |   1048577 |         91 |
-| 74 |      4098 |        110 |
-| 75 |        27 |        165 |
-| 76 |       516 |         84 |
-| 77 |        41 |        275 |
-| 78 |       134 |        126 |
-| 79 |   2097153 |        189 |
-| 80 |        80 |         80 |
-| 81 |        31 |        143 |
-| 82 |      8194 |        154 |
-| 83 |   4194305 |        231 |
-| 84 |        76 |        140 |
-| 85 |       133 |        385 |
-| 86 |     16386 |        210 |
-| 87 |      1027 |        315 |
-| 88 |       136 |        120 |
-| 89 |   8388609 |        539 |
-| 90 |        46 |        350 |
-| 91 |        73 |        525 |
-| 92 |      1028 |        180 |
-| 93 |      2051 |        875 |
-| 94 |     32770 |        270 |
-| 95 |       261 |        405 |
-| 96 |        96 |         96 |
-| 97 |  16777217 |        169 |
-| 98 |        50 |        242 |
-| 99 |        71 |        363 |
-| 100 |       52 |        196 |
+We will not offer a general definition of significance here, but this is the general intuition. Changing bits  on one end of the string has the smallest impact on the decoded value; changing bits on the other end of the string has the largest impact on the decoded value. (It is logically possible that an encoding will not have this property, but we will not consider any such encodings here.) The most significant bit is the one from the end of the canonical binary string which has the greatest impact on the decoded value. We will write strings so that the most significant bit is leftmost.
 
-Upon cursory inspection, some things jump out to me. 
+## Stack Encoding/Decoding
 
-## Fixed points
+The Peano axioms define the natural numbers according to a special element $0$ and the successor relation $S$. For example, $1$ is defined by a single application of the successor relation, 2 is defined by 2 applications, etc..:
 
-Here are the fixed points from the list above:
-* 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96
+| natural number | Peano string             | definition                                                |
+|       :-:      |                      --: | :--                                                       |
+|        0       | $\langle 0 \rangle$      | 0 is the least element                                    |
+|        1       | $\langle S0 \rangle$     | 1 is the successor of 0                                   |
+|        2       | $\langle SS0 \rangle$    | 2 is the successor of the successor of 0                  |
+|        3       | $\langle SSSSS0 \rangle$ | 3 is the successor of the successor of the successor of 0 |
+|       ...      | ...                      | ...                                                       |
 
-This set includes all powers of 2. In fact every fixed point in this set is of the form `p * 2^k` where p is one of {1, 2, 3, 5}. Note that 7 is not a fixed point, and neither is 7 * 2^1 = 14. One is tempted to conjecture that if _m_ and _n_ are both fixed points of this mapping, then so is _m * n_. This conjecture is falsified by _5 * 6 = 3 * 10_: 30 is not a fixed point. 
+This can be thought of as the "stack-of-plates" representation of a nonnegative integer — the integer $n$ is represented by $n$ applications of the successor function (plates), on top of the least element (base). 
 
-## Primes
+The stack mapping $stack: \mathbb{N} \rightarrow \mathbb{B}$ is straightforward to define, simply replacing $S$ in the above with $1$. Note that while this mapping is 1-1, it does not cover the space of canonical binary strings. So it is not technically an encoding by our definition. Instead, we will combine stack encoding with another mapping to define an invertible mapping that does cover $\mathbb{B}$.
 
-The mapping is nondecreasing on prime numbers across the board. Starting from 7, it is strictly increasing (`natperm(p) > p for all p > 5 if p is prime`). In fact, `natperm(p) = 2^k[p] + 1`, where k is the prime's ordinality (2 is the 0th prime, 3 is the 1th prime, etc..); this fact falls out from the construction of `natperm`. 
+## Prime Factorization
 
-## Other k-cycles
+Every positive integer $n$ can be uniquely expressed as the product of a multiset of primes. For example, here is the multiset corresponding to $28 = 2^2 \cdot 7^1$:
 
-There are a number of 2-cycles in the first 100: 
-* (7, 9)
-* (14, 18) 
-* (28, 36)
-* (56, 72)
+```math
+28 =
+    \begin{Bmatrix}
+        2: & 2, \\
+        7: & 1
+    \end{Bmatrix}
+```
 
-There are no 3-cycles in the first 100. 
+A multiset is unordered, and excludes 0-counts by definition. For reasons that will become clear shortly, we prefer to have an order and include 0 counts.
 
-## Escaping orbit
+Let $\vec{p} = (2, 3, 5, \ldots)$ be the sequence of primes in ascending order. We define a **multiplicity vector** $\vec{m}$ as the sequence of nonnegative integers that is eventually zero (that is, there exists a $K$ such that $m_k = 0$ for all $k > K$). For a given multiplicity vector $\vec{m}$, we define the natural product:
 
-The orbit of a value is defined as the sequence of values obtained by repeatedly applying a mapping. Here are the first 7 values in the orbit for 11, shown both as raw numbers and after taking the natural log:
-* raw: 11 —> 17 —> 65 —> 69 —> 515 —> 134217733 —> 18447026098442076193
-* ln(raw): 2.40 —> 2.83 —> 4.17 —> 4.23 —> 6.24 —> 18.71 —> 44.36
+```math
+n = \Pi_{k=1}^\infty (p_k)^{m_k}
+```
 
-While the log value is increasing by an average of 1 per step at first, it then increases by 12.5 on the fifth step, and then by 26 on the sixth step. This indicates super-exponential growth!
+The sequence $\vec{m}$ is defined as the multiplicity vector representation of the prime factorization. There is a 1-1 relation between this and the multiset representation; therefore the multiplicity vector prime factorization is also unique. We will use the notation $primevec: \mathbb{Z}^{+} \rightarrow (\mathbb{N} \rightarrow \mathbb{N})$ to denote the map which accepts a positive integer as an argument and returns a multiplicity vector corresponding to the prime factorization. For example,
 
-The notion of orbit is familiar from the analysis of fractals and other chaotic dynamic systems. For example, the Mandelbrot set is defined as the set of complex numbers which don't escape under iteration. In the Mandelbrot setting, |z| > 2 implies |f(z)| > |z|, in other once the magnitude gets bigger than 2, it will continue to grow. For quick and dirty analysis of `naturalperm`, I defined escape as reaching a magnitude of 1 billion. 
+```math
+\begin{matrix}
+                     & p_0 = 2  & p_1 = 3 & p_2 = 5  & p_3 = 7 & p_4 = 11 & p_5 = 13 & \ldots &   \\
+    primevec(28) = ( &    2,    &    0,   &    0,    &    1,   &    0,    &     0,   & \ldots & )
+\end{matrix}
+```
 
-I then checked which items escape in the first 1000 integers. It turns out that nearly all starting values escape, and the time to escape is between 3 and 8 steps for the first 100 or 200 integers, but quickly drops to 2-3 steps for most integers above 200. The fixed points and 2-cycles reported above already make up the majority of fixed points and 2-cycles I found, and I found no other k-cycles besides 2-cycles. 
+## Primefac-Stack Encoding
 
-I repeated the analysis for the inverse mapping. By symmetry, we might expect similar results; and that is exactly what I found. Both of these mappings then have similar statistical properties. Over some range of small numbers, they generally map about as many numbers to smaller numbers as larger numbers. However, because there are so many more large numbers than small numbers, the vast majority of orbits that start with small numbers "escape" (consist mostly of much larger numbers than they start with).
+In this section we define the other encoder/decoder pair, $penc$/$pdec$. For the encoder, the idea is to first map a number to its prime factorization multiplicity vector, and then map that multiplicity vector to a canonical binary string by concatenating the stack encodings of each multiplicity. 
+
+We must be a little careful with the construction, to obey the convention that the leftmost bit is most significant. Define $imax$ as a function which for a given multiplicity vector $\vec{m}$ returns the greatest index $i$ such that $m_i > 0$ (the index of the greatest prime which belongs to the prime factorization). We will construct a binary canonical string by "counting down" from this. For a given positive integer $n$, let $\vec{m} = primevec(n)$, and define
+
+```math
+penc(n) = \bigoplus_{k=imax(\vec{m})}^{0} stack(m_k)
+```
+
+where here the oplus sign is meant as string concatenation. Here is the familiar example of $28$, shown in tabular form:
+
+| prime          |  7  |  5  |  3  |  2  |
+| :--            | :-: | :-: | :-: | :-: |
+| ---            | --- | --- | --- | --- |
+| multiplicity   |  1  |  0  |  0  |  2  |
+| stack encoding | 10  |  0  |  0  | 110 |
+
+The primefac-stack encoding of $28$ is the canonical binary string $\langle 1000110 \rangle$.
+
+There is a special case: $\langle 0 \rangle$. We identify this canonical binary string with a multiplicity vector containing all zeros, which corresponds to the integer $1$. In other words, we define $penc(1) = \langle 0 \rangle$.
+
+## Invertibility of $penc$
+
+It is clear that every positive natural number can be encoded to a canonical binary string — the prime factorization exists and is unique, the mapping from prime factorization to multiplicity vector is well-defined, the stack encoding is likewise well-defined, and because the multiplicity vector is eventually zero for every positive integer, there is a maximum index and therefore the resulting string is finite; it must begin with a $1$ because the leftmost bit corresponds to the stack encoding of a multiplicity which is nonzero. We have taken care that the constituent sub-mappings are invertible, so the reader can verify that the primefac-stack mapping is 1-1.
+
+However, to satisfy our definition of encoding, $penc$ must be not only 1-1, but also onto. In other words, we must know that every canonical binary string corresponds to a unique natural number. Fortunately, this is easy to demonstrate informally. Although we have formulated primefac-stack encoding as a particular kind of composition, we have neglected to mention till now that the reason for doing this is parsability. The $0$ tokens are effectively separators, while the length of a contiguous sequence of $1$ tokens indicates the multiplicity. The following Python code snippet will recover the multiplicity vector from a $penc$-encoded string:
+
+```python
+>>> cbs = "1000110"
+>>> [len(s) for s in cbs.split("0")]
+[1, 0, 0, 2, 0]
+```
+
+From this multiplicity vector, it is straightforward to recover the integer according to the prime product already defined earlier. (Note that some additional bookkeeping is required to handle off-by-1 issues. The "extra" multiplicity of 0 at the end is harmless, since it represents multiplying by 1.) Every sequence of $1$'s and $0$'s can be so parsed, and every different sequence results in a different parse.
+
+## Putting it all together
+
+There is a final bit of bookkeeping to attend to. We have defined an encoder/decoder pair `benc`/`bdec` which map $\mathbb{N} \leftrightarrow \mathbb{B}$ using the binary power series representation, and another encoder/decoder pair `penc`/`pdec` which map $\mathbb{Z}^{+} \leftrightarrow \mathbb{B}$ using the prime factorization and stack encoding for prime multiplicities. There is now a slightly awkward issue — what happens to $0$? This element is not defined for `penc`/`pdec` (because the nonpositive number $0$ cannot be expressed as a product of positive factors). We address this mismatch by:
+* adding $1$ before `penc`, and subtracting $1$ after `pdec`
+
+Thus, finally, we define $natperm: \mathbb{N} \rightarrow \mathbb{N}$:
+
+```math
+\begin{matrix}
+    natperm(n) = bdec(penc(n + 1))       \\
+    natperm^{-1}(n) = pdec(benc(n)) - 1
+\end{matrix}
+```
+
+# Exploration
+
+Here is a table showing the orbit of each integer from 0 up to 50. Most orbits "escape" (operationally defined here as exceeding 100,000); in this case, the sequence of elements is shown up to but not including the first escaped element. However if the orbit is a cycle, this is shown with the cycle notation (elements enclosed in parentheses).
+
+| n   | orbit                                   |
+| :-- |  :--                                    |
+| 0   |   (0)                                   |
+| 1   |   (1)                                   |
+| 2   |   (2)                                   |
+| 3   |   (3)                                   |
+| 4   |   (4)                                   |
+| 5   |   (5)                                   |
+| 6   |   (6, 8)                                |
+| 7   |   (7)                                   |
+| 8   |   (8, 6)                                |
+| 9   |   (9)                                   |
+| 10  | 16, 64, 68, 514, ...                    |
+| 11  |   (11)                                  |
+| 12  | 32, 34, 20, 18, 128, 16386, ...         |
+| 13  |   (13, 17)                              |
+| 14  | 10, 16, 64, 68, 514, ...                |
+| 15  |   (15)                                  |
+| 16  | 64, 68, 514, ...                        |
+| 17  |   (17, 13)                              |
+| 18  | 128, 16386, ...                         |
+| 19  |   (19)                                  |
+| 20  | 18, 128, 16386, ...                     |
+| 21  | 33, 129, 137, 1029, ...                 |
+| 22  | 256, ...                                |
+| 23  |   (23)                                  |
+| 24  | 12, 32, 34, 20, 18, 128, 16386, ...     |
+| 25  | 65, 69, 41, 37, 257, 32773, ...         |
+| 26  | 14, 10, 16, 64, 68, 514, ...            |
+| 27  |   (27, 35)                              |
+| 28  | 512, 1038, ...                          |
+| 29  | 21, 33, 129, 137, 1029, ...             |
+| 30  | 1024, 16396, ...                        |
+| 31  |   (31)                                  |
+| 32  | 34, 20, 18, 128, 16386, ...             |
+| 33  | 129, 137, 1029, ...                     |
+| 34  | 20, 18, 128, 16386, ...                 |
+| 35  |   (35, 27)                              |
+| 36  | 2048, ...                               |
+| 37  | 257, 32773, ...                         |
+| 38  | 66, ...                                 |
+| 39  |   (39)                                  |
+| 40  | 4096, ...                               |
+| 41  | 37, 257, 32773, ...                     |
+| 42  | 8192, ...                               |
+| 43  | 67, 259, 275, 2059, ...                 |
+| 44  | 22, 256, ...                            |
+| 45  | 513, ...                                |
+| 46  | 16384                                   |
+| 47  |   (47)                                  |
+| 48  | 24, 12, 32, 34, 20, 18, 128, 16386, ... |
+| 49  | 25, 65, 69, 41, 37, 257, 32773, ...     |
+
+Note that many of the rows contain overlapping information. For example, the $22$ row shows $22 \rightarrow 256 -> rightarrow \ldots$. As it turns out, $44 /rightarrow 22$ so the information in the $44$ row is a proper superset of the information in the $22$ row. The following is an alternate representation of `natperm`, in which (possibly infinite) cycles have been truncated as $\ldots$ once their orbits escape:
+
+```math
+natperm = \begin{matrix}
+    (0)(1)(2)(3)(4)(5)(6, 8)(7)(9)(26, 14, 10, 16, 64, 68, 514, \ldots)(11)     \\
+    (48, 24, 12, 32, 34, 20, 18, 128, 16386, \ldots)(13, 17)(15)(19)            \\
+    (29, 21, 33, 129, 137, 1029, \ldots)(44, 22, 256, \ldots)(23)               \\
+    (49, 25, 65, 69, 41, 37, 257, 32773, \ldots)(27, 35)(28, 512, 1038, \ldots) \\
+    (30, 1024, 16396, \ldots)(31)(33, 129, 137, 1029, \ldots)(36, 2048, \ldots) \\
+    (41, 37, 257, 32773, \ldots)(38, 66, \ldots)(39)(40, 4096, \ldots)          \\
+    (42, 8192, \ldots)(43, 67, 259, 275, 2059, \ldots)(45, 513, \ldots)         \\
+    (46, 16384, \ldots)(47) \cdot \ldots
+\end{matrix}
+```
+
+(The product is arranged in ascending order according to the least element of each cycle, without repeating elements that have been covered in an earlier cycle.) 
+
+# Some Properties
+
+## Fixed Points and Cycles
+
+Informally, we observe that the likelihood of being a fixed point is high for the smallest numbers, and appears to decrease rapidly as numbers grow beyond $9$. All fixed points greater than $9$ in this sample are prime numbers, however not all prime numbers are fixed points (for example $41 \rightarrow 37$.
+
+The observed 2-cycles are only $(6, 8)$ and $(27, 35)$. We note that both of these consist of simple composite numbers consisting of just 1 or 2 primes; however this is too small a sample to say much about. There are no 3-cycles among the first hundred integers (3-cycles are sometimes diagostic of chaos in iterated function systems).
+
+## Parity
+
+It seems that all elements of a cycle have the same parity (all elements are even, or all elements are odd). We leave it as an exercise to the reader to determine whether this fact falls out from the way the mapping is defined.
+
+## Ascent, Descent, and Escape
+
+The (potentially infinite) longer cycles generally exhibit both ascent and descent before they escape. Analysis not shown here indicates that some orbits exhibit super-exponential growth (that is, $\frac{m_{k+1}}{m_k} > \frac{m_k}{m_k-1}$ for most values of $k$ until iteration becomes infeasible). Quick and informal analysis (also not shown here) suggests that more or less the same property holds for the inverse. Thus, it appears that most orbits which include small integers (less than 100) are "locally parabolic" about the small integer.
+
+# Conclusion
+
+This writeup has offered a mechanism to define a computable permutation on the natural numbers. The basic idea is to define an encoding as an invertible mapping from the natural numbers (or positive integers) onto the space of canonical binary strings. The forward map is called the encoder; its inverse is a decoder. With two **distinct** encodings, it is straightforward to define a permutation on the natural numbers by composing one encoder with the non-matching decoder. This writeup constructed such a permutation using binary representation for one encoding, and prime factorization with stack encoding for the other. A working code implementation with unit tests is given in this repo.
+
+## Towards a definition of nonsimple 
+
+Every finite permutation (permutation on a finite set) can be represented as the finite product of finite cycles.
+
+Of the "simple" countably infinite permutations defeined earlier, the parity-flipping and sign-flipping permutations can be represented as an infinite product of finite cycles.
+
+Conversely, the shift-by-k permutation can be represented as a finite product of infinite cycles.
+
+This leaves a gap — a permutation which is the infinite product of infinite cycles. It is tempting to speculate that a nonsimple permutation is exactly one which fills this gap. (Such a permutation could include finite cycles, and might even include infinitely many of them.) We have not shown here that the offered permutation `natperm` actually has this property. It is logically possible that besides a few fixed points and 2-cycles, `natperm` actually consists of one very large derangement. As it is computationally prohibitive to factor very large numbers, and we have seen that most orbits "escape" rapidly to large numbers, this question must await further computational investigation or richer theoretical analysis.
+
+# References

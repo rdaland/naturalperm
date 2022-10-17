@@ -13,9 +13,11 @@ from naturalperm.naturalperm import (
 SOME_BIGINT = 600851475143
 BIGINT_FACTORS = [71, 839, 1471, 6857]
 
+
 # illustrate module paths
 def test_version():
     assert __version__ == '0.1.0'
+
 
 def strip_leading_zeros(binstr: str) -> str:
     if len(binstr) == 1:
@@ -24,6 +26,7 @@ def strip_leading_zeros(binstr: str) -> str:
         return binstr[binstr.index('1'):]
     except ValueError:
         return '0'
+
 
 def test_strip_leading_zeros():
     assert strip_leading_zeros('0') == '0'
@@ -34,17 +37,17 @@ def test_strip_leading_zeros():
 
 class TestBinaryTransformer:
     def test_benc(self):
-        assert benc(1) == '0'
-        assert benc(2) == '1'
-        assert benc(3) == '10'
+        assert benc(0) == '0'
+        assert benc(1) == '1'
+        assert benc(2) == '10'
 
     def test_bdec(self):
-        assert bdec('0') == 1
-        assert bdec('1') == 2
-        assert bdec('10') == 3
+        assert bdec('0') == 0
+        assert bdec('1') == 1
+        assert bdec('10') == 2
 
     def test_benc_and_bdec_are_inverses(self):
-        for i in range(1, 100 + 1):
+        for i in range(0, 100):
             assert bdec(benc(i)) == i
         for bintuple in itertools.product('01', repeat=8):
             binstr = strip_leading_zeros(''.join(bintuple))
@@ -74,16 +77,14 @@ class TestPrimeTransformer:
 
 class TestNaturalPermutation:
     def test_natperm__basic(self):
+        assert natperm(0) == 0
         assert natperm(1) == 1
-        with pytest.raises(ValueError):
-            natperm(0)
 
     def test_natperminv__basic(self):
+        assert natperminv(0) == 0
         assert natperminv(1) == 1
-        with pytest.raises(ValueError):
-            natperminv(0)
 
     def test_natperm_and_natperminv_are_inverses(self):
-        for i in range(1, 100 + 1):
+        for i in range(100):
             assert natperminv(natperm(i)) == i
-            assert natperminv(natperm(i)) == i
+            assert natperm(natperminv(i)) == i
