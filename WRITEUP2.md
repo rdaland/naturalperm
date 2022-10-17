@@ -318,7 +318,7 @@ natperm = \begin{matrix}
 
 ## Fixed Points and Cycles
 
-Informally, we observe that the likelihood of being a fixed point is high for the smallest numbers, and appears to decrease rapidly as numbers grow beyond $9$. All fixed points greater than $9$ are prime numbers, however not all prime numbers are fixed points (for example $41 \rightarrow 37$.
+Informally, we observe that the likelihood of being a fixed point is high for the smallest numbers, and appears to decrease rapidly as numbers grow beyond $9$. All fixed points greater than $9$ in this sample are prime numbers, however not all prime numbers are fixed points (for example $41 \rightarrow 37$.
 
 The observed 2-cycles are only $(6, 8)$ and $(27, 35)$. We note that both of these consist of simple composite numbers consisting of just 1 or 2 primes; however this is too small a sample to say much about. There are no 3-cycles among the first hundred integers (3-cycles are sometimes diagostic of chaos in iterated function systems).
 
