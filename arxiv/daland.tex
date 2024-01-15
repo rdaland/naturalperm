@@ -116,7 +116,7 @@ Let $\xi_0$ be a bijection on a subset of the natural numbers. Define the \texti
   \end{cases}
 \end{equation}
 
-A finite permutation is normally understood as a bijection on a set like $\{ 1, 2, \ldots, m \}$ for some $m$, i.e. what makes it finite is that the domain is finite. Every such bijection can be lifted to a natperm. In fact, it will prove convenient to apply the \textit{lifting convention} throughout this article: lifting will be understood to apply automatically to eligible mappings (those denoted by lowercase Greek letters, with the exception of $\sigma$/$\sigma_k$). As a result of this convention, the domain of a bijection on a subset of the natural numbers is effectively the entire natural numbers, which is not a finite set. In this context, the notion of finiteness must be scoped to the support of the natperm rather than its domain. Accordingly, $\xi$ is a \textit{finite natperm} if and only if $\exists M \in \mathbb{N} \ni | support(\xi) | \leq M$.
+A finite permutation is normally understood as a bijection on a set like $\{ 1, 2, \ldots, m \}$ for some $m$, i.e. what makes it finite is that the domain is finite. Every such bijection can be lifted to a natperm. In fact, it will prove convenient to apply the \textit{lifting convention} throughout this article: lifting will be understood to apply automatically to eligible mappings (those denoted by lowercase Greek letters, with the exception of $\sigma$/$\sigma_k$). As a result of this convention, the domain of a bijection on a subset of the natural numbers is effectively the entire natural numbers, which is not a finite set. In this context, the notion of finiteness must be scoped to the support of the natperm rather than its domain. Accordingly, $\xi$ is a \textit{finite natperm} if and only if its support is a finite set.
 
 \subsection{Block cyclic natperms}
 
@@ -189,11 +189,11 @@ Let $\pi$ be a natperm. Define the \textit{displacement} of $\pi$ at an input $n
 
 \underline{Claim}: If $\pi$ is a bounded block cyclic natperm, then $\pi \in \Theta(1)$.
 
-\textit{Proof}: Let $(b_j)_{j=1}^{\infty}$ be the sequence of boundaries that define $\pi$. By the definition of bounded block cyclic natperm, there is an finite upper bound $C \ni | b_{j+1} - b_j | \leq C \forall j$. Since the natperm only remaps elements within a block, the maximum displacement can never exceed the maximum block size (which must be less than or equal to $C$).
+\textit{Proof}: Let $(b_j)_{j=1}^{\infty}$ be the sequence of boundaries that define $\pi$. By the definition of bounded block cyclic natperm, there is an finite upper bound $C \ni | b_{j+1} - b_j | \leq C \  \forall j$. Since the natperm only remaps elements within a block, the maximum displacement can never exceed the maximum block size (which must be less than or equal to $C$).
 
 \underline{Conjecture}: If $\pi$ is an unbounded block cyclic natperm, then $\pi \in \Theta(n)$ (or $\pi \in \Theta(1)$).
 
-\textit{Rationale}: Consider the example provided earlier, where the blocks are defined by boundary sequence $b_j = 2^j$ and the mapping on each block is the shift map (except gluing the top of the block to its bottom). The first two blocks are $(1)$ and $(2)$. For all higher blocks $j > 2$, the displacement is $1$ within the block (the shift amount), and then $2^j - 2^{j-1} = 2^{j-1}$ at the glue point. Since $2^{j-1}$ is increasing in $j$ (and greater than $1$ for all $j > 1$), the maximum displacement is $2^{j-1}$ for values up to $2^j$. Therefore, at the glue points, the ratio of displacement to value is $2^{j-1} / 2^j = \frac{1}{2}$ (and elsewhere it tends to zero as $j$ increases). This shows that one-half is the limit value for the ratio of maximum displacement to value.
+\textit{Rationale}: Consider the example provided earlier, where the blocks are defined by boundary sequence $b_j = 2^j$ and the mapping on each block is the shift map (except gluing the top of the block to its bottom). The first two blocks are $(1)$ and $(2)$. For all higher blocks $j \geq 2$, the displacement is $1$ within the block (the shift amount), and then $2^j - 2^{j-1} = 2^{j-1}$ at the glue point. Since $2^{j-1}$ is increasing in $j$ (and greater than $1$ for all $j > 1$), the maximum displacement is $2^{j-1}$ for values up to $2^j$. Therefore, at the glue points, the ratio of displacement to value is $2^{j-1} / 2^j = \frac{1}{2}$ (and elsewhere it tends to zero as $j$ increases). This shows that one-half is the limit value for the ratio of maximum displacement to value.
 
 This unbounded block cyclic natperm was constructed to have the greatest possible displacement within blocks (by gluing top to bottom). And therefore the blockwise displacement scales linearly with the size of the blocks, even though the blocks themselves grow exponentially in size. And since the block sizes accumulate exponentially, the resulting ratio of maximum displacement to input size is linear too. This article will not attempt to prove that this property holds for all possible choices of block sizes. Instead, this is left as a conjecture for future research.
 
@@ -209,15 +209,15 @@ Note that this proof is designed for the base example presented earlier. It is a
 
 \subsection{Summary}
 
-This section has presented a formalization of the notion of "locality" with respect to natperms. The basic idea is to track the distance between an element and its image. The maximum distance is of course finite in finite natperms. Block cyclic natperms can be considered as an infinite product of finite permutations. If the block size is upper bounded, the maximum distance is too; if not, it is conjectured that the maximum distance scales linearly with the input (or less; but crucially, not supra-linearly). Shift-and-glue natperms can be considered as a finite product of permutations on countably nonfinite subsets of $\mathbb{N}$; here, too, the maximum distance is finite. These ``simple'' examples are constructed from familiar elements (finite blocks, finite permutations, the shift map, and some light gluing operations). This raises an interesting question: is it possible to construct a natperm which is essentially different from these simple examples? For example, can there be a natperm $\pi$ which is not in $\Theta(n)$ or $\Theta(1)$? Can a natperm be a product of a mix of orbits which belong to different displacement classes?
+This section has defined displacement as the distance between an element and its image, and proposed that the limit behavior of maximum displacement (as input value grows) is a way to classify natperms. The maximum displacement is of course finite in finite natperms. Block cyclic natperms can be considered as an infinite product of finite permutations. If the block size is upper bounded, the maximum displacement is too; if not, it is conjectured that the maximum displacement scales linearly with the input (or less; but crucially, not supra-linearly). Shift-and-glue natperms can be considered as a finite product of permutations on countably nonfinite subsets of $\mathbb{N}$; here, too, the maximum distance is finite. These ``simple'' examples are constructed from familiar elements (finite blocks, finite permutations, the shift map, and some light gluing operations). This raises an interesting question: is it possible to construct a natperm which is essentially different from these simple examples? For example, can there be a natperm $\pi$ which is not in $\Theta(n)$ or $\Theta(1)$? Can a natperm be a product of a mix of orbits which belong to different classes?
 
 \section{A natperm with nonlocal displacement}
 
-The previous sections introduced various patterns for generating natperms, all exhibiting the property that the maximum displacement was either $O(1)$ or $O(n)$. The remainder of this paper describes a method to construct a natperm which seemingly lacks this locality property.
+This section describes a natperm which is seemingly not $\Theta(1)$ or $\Theta(n)$.
 
 \subsection{Overview}
 
-The general approach will start with a set $\mathbb{B}$ that is homeomorphic to $\mathbb{N}$. This article will refer to an invertible mapping from $\mathbb{N}$ onto $\mathbb{B}$ as an \textbf{encoder}, and its inverse as the corresponding \textbf{decoder}. Let \texttt{fenc}, \texttt{fdec} be an encoder-decoder pair, and \texttt{genc}, \texttt{gdec} another, different encoder-decoder pair. Then $\texttt{gdec} \circ \texttt{fenc}$ is a bijection from $\mathbb{N}$ to $\mathbb{N}$, in other words a natperm. The remainder of this section will define the bijective space $\mathbb{B}$, an encoder-decoder pair, a different encoder-decoder pair; finally it will conclude with some analysis.
+The general approach will start with a set $\mathbb{B}$ that is homeomorphic to $\mathbb{N}$. This article will refer to an invertible mapping from $\mathbb{N}$ onto $\mathbb{B}$ as an \textbf{encoder}, and its inverse as the corresponding \textbf{decoder}. Let \texttt{fenc}, \texttt{fdec} be an encoder-decoder pair, and \texttt{genc}, \texttt{gdec} another, different encoder-decoder pair. Then $\texttt{gdec} \circ \texttt{fenc}$ is a bijection from $\mathbb{N}$ to $\mathbb{N}$, in other words a natperm. This section will define the bijective space $\mathbb{B}$, an encoder-decoder pair, a different encoder-decoder pair; finally it will conclude with some analysis.
 
 \subsection{Canonical binary strings}
 
@@ -235,7 +235,7 @@ It is well known that a natural number can be represented as a sum of all powers
 \end{equation}
 Define the binary encoder \texttt{benc} as mapping each natural number to the shortest such coefficient sequence (i.e. with no extraneous leading zeros), e.g. $\texttt{benc}(13) = \langle 1101 \rangle$.
 
-The binary decoder \texttt{bdec} is simply the inverse of \texttt{benc}. Note that standard computational implementations of \texttt{benc} allow extraneous leading zeros. Items like $\langle 01101 \rangle$ and $\langle 001101 \rangle$ would otherwise map to the same value as $\langle 1101 \rangle$ does (13). But allowing this would prevent invertibility. The exclusion of leading zeros in $\mathbb{B}$, and the restriction of \texttt{benc} to the shortest binary coefficient sequence, is all so that \texttt{benc} and \texttt{bdec} can be inverses.
+The binary decoder \texttt{bdec} is simply the inverse of \texttt{benc}. Note that standard computational implementations of \texttt{benc} allow extraneous leading zeros. Items like $\langle 01101 \rangle$ and $\langle 001101 \rangle$ would otherwise map to the same value as $\langle 1101 \rangle$ does (namely, 13). But allowing this would prevent invertibility. The exclusion of leading zeros in $\mathbb{B}$, and the restriction of \texttt{benc} to the shortest binary coefficient sequence, is all so that \texttt{benc} and \texttt{bdec} can be inverses.
 
 \subsection{Primefac Peano encoder/decoder}
 
@@ -290,19 +290,51 @@ It is straightforward to show that \texttt{penc} is 1-1: \begin{itemize}
 \end{itemize}
 
 
-To demonstrate invertibility, it is sufficient to show that \texttt{penc} is onto, i.e. an arbitrary element $b \in \mathbb{B}$ must have a preimage. Observe that $b = \langle 1 s_{k} s_{k-1} \cdots s_0 \rangle$, where each $s_i$ is either the delimiter $0$ or the matchstick $1$. If $b$ contains no zeros, it must be a string consisting of $k$ copies of $1$, where $k \geq 1$. In this case, $stick^{-1}(b) = k$, and $2^k \geq 2$. Then $\sigma^{-1}(2^k) = 2^k - 1 \geq 1\in \mathbb{N}$. Otherwise, the split-by-$0$ operation (which is the inverse of the join-with-$0$ operation) must produce a sequence of strings of the form $\langle 1* \rangle$. This follows because $b$ can consist only of $1$s and $0$s, and each $0$ is a delimiter. The matchstick mapping is invertible, e.g. $match^{-1}(\langle \rangle) = 0$ and $match^{-1}$ applied to a sequence of $k$ $1$s is simply $k$. Then $\overline{match}^{-1}$ produces a sequence of integers, of which the leftmost must be nonzero, and all values must be nonnegative integers. In other words, $\overline{match}^{-1}$ yields a multiplicity vector. The leftmost entry corresponds to a prime $p > 2$, and its multiplicity must be greater than or equal to 1. Therefore, the product (the inverse of $primefac$) is well-defined and greater than 1. As a result, $sigma^{-1}$ can be applied, yielding a value that is greater than or equal to 1. In other words, every value $b \in \mathbb{B}$ has a preimage under \texttt{penc}. Since \texttt{penc} is 1-1, this preimage is unique; in other words, $\texttt{pdec} = \texttt{penc}^{-1}$ is well-defined and \texttt{penc} is an encoder.
+To demonstrate invertibility, it is sufficient to show that \texttt{penc} is onto, i.e. an arbitrary element $b \in \mathbb{B}$ must have a preimage. Observe that $b = \langle 1 s_{k} s_{k-1} \cdots s_0 \rangle$, where each $s_i$ is either the delimiter $0$ or the matchstick $1$. If $b$ contains no zeros, it must be a string consisting of $k$ copies of $1$, where $k \geq 1$. In this case, $stick^{-1}(b) = k$, and $2^k \geq 2$. Then $\sigma^{-1}(2^k) = 2^k - 1 \geq 1\in \mathbb{N}$. Otherwise, the split-by-$0$ operation (which is the inverse of the join-with-$0$ operation) must produce a sequence of strings of the form $\langle 1* \rangle$. This follows because $b$ can consist only of $1$s and $0$s, and each $0$ is a delimiter. The matchstick mapping is invertible, e.g. $stick^{-1}(\langle \rangle) = 0$ and $stick^{-1}$ applied to a sequence of $k$ $1$s is simply $k$. Then $\overline{stick}^{-1}$ produces a sequence of integers, of which the leftmost must be nonzero, and all values must be nonnegative integers. In other words, $\overline{stick}^{-1}$ yields a multiplicity vector. The leftmost entry corresponds to a prime $p > 2$, and its multiplicity must be greater than or equal to 1. Therefore, the product (the inverse of $primefac$) is well-defined and greater than 1. As a result, $\sigma^{-1}$ can be applied, yielding a value that is greater than or equal to 1. In other words, every value $b \in \mathbb{B}$ has a preimage under \texttt{penc}. Since \texttt{penc} is 1-1, this preimage is unique; in other words, $\texttt{pdec} = \texttt{penc}^{-1}$ is well-defined and \texttt{penc} is an encoder.
 
-\subsubsection{Selected examples}
+\subsubsection{Encoder behavior demonstrated with selected examples}
 
-This subsection illustrates the encoding/decoding for a few values of interest. The Pythonic notation $(x, )$ is used to indicate a vector consisting of the single element $x$ (as distinct from a scalar $x$ which happens to be enclosed in parentheses for grouping clarity).
+This subsection illustrates the encoding/decoding for the first several natural numbers. The Pythonic notation $(x, )$ is used to indicate a vector consisting of the single element $x$ (as distinct from a scalar $x$ which happens to be enclosed in parentheses for grouping clarity).
 
 \begin{center} \begin{tabular}{l c l}
   $\texttt{penc}(0)$ &    & $(undefined)$ \\
   \\
   $\texttt{penc}(1)$ & = & $\bigoplus_0 \, (\overline{stick} \circ primefac \circ \sigma) (1) = \bigoplus_0 \, (\overline{stick} \circ primefac) (2) $ \\
                               & = & $\bigoplus_0 \, (\overline{stick} (\, (1,) \, )) = \bigoplus_0  \,( \, stick(1), \,) = \bigoplus_0 \, ( \, \langle 1 \rangle, )$ \\
-                              & = & $\langle 1 \rangle$
+                              & = & $\langle 1 \rangle$ \\
+  \\
+  $\texttt{penc}(2)$ & = & $\bigoplus_0 \, (\overline{stick} \circ primefac \circ \sigma) (2) = \bigoplus_0 \, (\overline{stick} \circ primefac) (3)$ \\
+                              & = & $\bigoplus_0 \, (\overline{stick} (\, (1, 0) \, )) = \bigoplus_0  \,( \langle 1 \rangle, \langle \rangle )$ \\
+                              & = & $\langle 10 \rangle$ \\
+  \\
+  $\texttt{penc}(3)$ & = & $\bigoplus_0 \, (\overline{stick} \circ primefac) (4) = \bigoplus_0 \, (\overline{stick} (\, (2,) \, )) $ \\
+                              & = & $\langle 11 \rangle $ \\
+  \\
+  $\texttt{penc}(4)$ & = & $\bigoplus_0 \, (\overline{stick} \circ primefac) (5) = \bigoplus_0 \, (\overline{stick} (\, (1, 0, 0) \, )) $ \\
+                               & = & $\langle 100 \rangle$ \\
+  \\
+  $\texttt{penc}(5)$ & = & $\bigoplus_0 \, (\overline{stick} \circ primefac) (6) = \bigoplus_0 \, (\overline{stick} (\, (1, 1) \, ))$ \\
+                              & = & $\langle 101 \rangle$ \\
+  \\
+  $\texttt{penc}(6)$ & = & $\bigoplus_0 \, (\overline{stick} \circ primefac) (7) = \bigoplus_0 \, (\overline{stick} (\, (1, 0, 0, 0) \, )) $ \\
+                              & = & $\langle 1000 \rangle$ \\
+  \\
+  $\texttt{penc}(7)$ & = & $\bigoplus_0 \, (\overline{stick} (\, (3,) \, )) = \langle 111 \rangle$ \\
 \end{tabular} \end{center}
+
+This sample is enough to show that at small values, the lexicographic order of the natural numbers is strongly correlated with lexicographic order of their encodings. However, the final two values in the table above illustrate a pair where $n_1 < n_2$ but $\texttt{penc}(n_1) > \texttt{penc}(n_2)$, i.e. a pair where the encoder does not preserve lexicographic order. In fact, it is not hard to induce a recipe from this example for finding many other pairs where $\texttt{penc}$ does not preserve lexicographic order. Observe that the final two values in the table above can be represented as $(n_1, n_2) = (7^1 - 1, 2^3 - 1)$. It is not difficult to show that $\texttt{penc}(2^k - 1) = k \cdot \langle 1 \rangle$ (where multiplication has the standard meaning, of iterated string concatenation). Similarly, if $p_j$ is the $j^{th}$ prime, $\texttt{penc}(p_j^k - 1) = k \cdot \langle 1 \rangle + (j - 1) \cdot \langle 0 \rangle$ (where addition has the standard meaning of string concatenation). By selecting a low exponent for the prime greater than 2, and a higher exponent for 2, it is easy to find additional examples where $\texttt{penc}$ does not preserve lexicographic order.
+
+\subsection{Orbits of natperm}
+
+This section illustrates all orbits which pass through the interval [1, 100], terminating whenever the value exceeds 1e6.
+
+The mixed occurrence of cycles and not obviously overlapping, not obviously finite orbits is pointed out.
+
+It is highlighted that a few examples illustrate supra-exponentially increasing orbits.
+
+\section{Conclusion}
+
+Some words please.
 
 \end{document}
 
