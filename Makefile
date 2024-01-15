@@ -24,6 +24,9 @@ all:     ## Execute build, test, and publish targets
 build:   ## Verify code can build
 > poetry build
 
+do:      ## Execute the package (to dump Markdown or other analysis)
+> poetry run python -m naturalperm
+
 test:    ## Run unit tests
 > poetry run pytest
 
