@@ -1,4 +1,4 @@
-from naturalperm.primefac import PrimeFacMorphism
+from naturalperm.primestack import PrimeFacMorphism
 
 
 def test_primefac_morphism_encoder():

@@ -1,4 +1,4 @@
-from naturalperm.isomorphism import Isomorphism
+from .isomorphism import Isomorphism
 
 
 class BinaryMorphism(Isomorphism):

@@ -1,7 +1,7 @@
 from collections import Counter
 from math import prod
 from primefac import primefac, primegen
-from naturalperm.isomorphism import Isomorphism
+from .isomorphism import Isomorphism
 
 class PrimeFacMorphism(Isomorphism):
 
