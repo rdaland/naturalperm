@@ -3,3 +3,8 @@
 .DS_Store
 .idea
 dist/
+venv
+*.log
+*.aux
+*.out
+*.synctex.gz
