@@ -1,6 +1,6 @@
-from .naturalperm import natperm
+from .naturalperm import natperm, natperminv
 
-REALLY_BIG_NUMBER = 100000
+REALLY_BIG_NUMBER = 10000
 
 
 def orbit(x: int, escape: int = REALLY_BIG_NUMBER, f=natperm) -> list[int]:
@@ -14,5 +14,5 @@ def orbit(x: int, escape: int = REALLY_BIG_NUMBER, f=natperm) -> list[int]:
 
 print(f"| n   | orbit |")
 print(f"| :-- |  :--  |")
-for i in range(1, 51):
-    print(f"| {i}  | {orbit(i)} |")
+for i in [91, 92, 93, 94, 96, 100]:
+    print(f"| {i}  | {orbit(i, f=natperminv)} |")

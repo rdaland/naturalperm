@@ -324,13 +324,92 @@ This subsection illustrates the encoding/decoding for the first several natural 
 
 This sample is enough to show that at small values, the lexicographic order of the natural numbers is strongly correlated with lexicographic order of their encodings. However, the final two values in the table above illustrate a pair where $n_1 < n_2$ but $\texttt{penc}(n_1) > \texttt{penc}(n_2)$, i.e. a pair where the encoder does not preserve lexicographic order. In fact, it is not hard to induce a recipe from this example for finding many other pairs where $\texttt{penc}$ does not preserve lexicographic order. Observe that the final two values in the table above can be represented as $(n_1, n_2) = (7^1 - 1, 2^3 - 1)$. It is not difficult to show that $\texttt{penc}(2^k - 1) = k \cdot \langle 1 \rangle$ (where multiplication has the standard meaning, of iterated string concatenation). Similarly, if $p_j$ is the $j^{th}$ prime, $\texttt{penc}(p_j^k - 1) = k \cdot \langle 1 \rangle + (j - 1) \cdot \langle 0 \rangle$ (where addition has the standard meaning of string concatenation). By selecting a low exponent for the prime greater than 2, and a higher exponent for 2, it is easy to find additional examples where $\texttt{penc}$ does not preserve lexicographic order.
 
-\subsection{Orbits of natperm}
+\subsection{Definition of nonsimple natperm}
 
-This section illustrates all orbits which pass through the interval [1, 100], terminating whenever the value exceeds 1e6.
+With the machinery from previous subsections, it is now simple to define the natperm
 
-The mixed occurrence of cycles and not obviously overlapping, not obviously finite orbits is pointed out.
+\begin{equation}
+    \psi(n) = ( \texttt{bdec} \circ \texttt{penc} ) (n)
+\end{equation}
 
-It is highlighted that a few examples illustrate supra-exponentially increasing orbits.
+with corresponding inverse $\psi^{-1}(n) = ( \texttt{pdec}  \circ \texttt{benc} ) (n)$.
+
+\section{Illustration and analysis of nonsimple natperm behavior}
+
+The following table represents the behavior of all cycles of $\psi$ which intersect the interval $ [ 1, 100 ] $. 
+
+\begin{center} \begin{tabular}{|c|c|}
+  \hline
+  fixed points & 2-cycles \\
+  \hline
+  (1) & \\
+  (2) & \\
+  (3) & \\
+  (4) & \\
+  (5) & \\
+  (7) & (6, \, 8) \\
+  (9) & \\
+  (11) & \\
+  (15) & (13, \, 17) \\
+  (19) & \\
+  (23) & \\
+  (31) & (27, \, 35) \\
+  (39) & \\
+  (47) & \\
+  (63) & (55, \, 71) \\
+  (79) & \\
+  (95) & \\
+  \hline
+\end{tabular} \end{center}
+
+The next table represents all other orbits which intersect the interval $ [1, 100] $, sorted in ascending order of the smallest element which intersects the range (bolded). While not strictly monotonic, orbits tend to decrease until they intersect the range, and begin increasing soon thereafter. Orbits are deemed to ``escape'' when the image (or preimage) exceeds an arbitrary threshold of 10000; each row therefore takes the form of some preimage above the threshold, followed by a sequence of values below the threshold, followed by an image value above the threshold. For brevity, the above-threshold values at the beginning and end of each row are rendered in scientific notation.
+
+\begin{center} \begin{tabular}{rcl}
+  \hline
+  ..., \textit{2.35e4}, \, 714, \, 164, \, 74, \, 26, \, 14, & \textbf{10}, & 16, \, 64, \, 68, \, 514, \, \textit{1.34e8}, ... \\
+  ..., \textit{6.61e4}, \, 2400, \, 120, \, 48, \, 24, & \textbf{12}, & 32, \, 34, \, 20, \, 18, \, 128, \, \textit{1.64e4}, ... \\
+  ..., \textit{4.72e4}, \, 1429, \, 329, \, 149, \, 53, \, 29, & \textbf{21}, & 33, \, 129, \, 137, \, 1029, \, \textit{2.68e8}, ... \\
+  ..., \textit{2.66e5}, \, 944, \, 174, \, 44, & \textbf{22}, & 256, \, \textit{1.8e16}, ... \\
+  ..., \textit{1.32e5}, \, 4801, \, 241, \, 97, \, 49, & \textbf{25}, & 65, \, 69, \, 41, \, 37, \, 257, \, \textit{3.28e4}, ... \\
+  ..., \textit{8.84e4}, \, 3124, \, 124, \, & \textbf{28}, & 512, \, 1038, \, \textit{2.39e52}, ... \\
+  ..., \textit{2.76e4}, \, 1308, \, 296, \, 142, \, 80, & \textbf{30}, & 1024, \, \textit{1.64e4}, ... \\
+  ..., \textit{1.05e5}, \, 2196, \, 224, \, 54, & \textbf{36}, & 2048, \, \textit{2.13e37}, ... \\
+  ..., \textit{4.02e5}, \, 7202, \, 242, \, 62, & \textbf{38}, & 66, \, \textit{2.62e5}, ... \\
+  ..., \textit{1.08e8}, \, 7864, \, 356, \, 274, \, 76, & \textbf{40}, & 4096, \, \textit{9.01e15}, ... \\
+  ..., \textit{2.29e4}, \, 846, \, 104, & \textbf{42}, & 8192, \, \textit{1.29e120}, ... \\
+  ..., \textit{9.44e4}, \, 2859, \, 659, \, 299, \, 107, \, 59, & \textbf{43}, & 67, \, 259, \, 275, \, 2059, \, \textit{5.37e8}, ... \\
+  ..., \textit{5.32e5}, \, 1889, \, 349, \, 89, & \textbf{45}, & 513, \, \textit{3.60e16}, ... \\
+  ..., \textit{2.73e5}, \, 1714, \, 116, \, 134, & \textbf{46}, & \textit{1.64e4}, ... \\
+  ..., \textit{1.92e5}, \, 1858, \, 208, \, 272, \, 146, & \textbf{50}, & 130, \, \textit{2.15e9}, ... \\
+  ..., \textit{2.64e5}, \, 9603, \, 483, \, 195, \, 99, & \textbf{51}, & 131, \, 139, \, 83, \, 75, \, 515, \, \textit{6.55e4}, ... \\
+  ..., \textit{1.20e4}, \, 244, & \textbf{52}, & \textit{3.28e4}, ... \\
+  ..., \textit{7.30e5}, \, 3464, \, 342, & \textbf{56}, & 258, \, 4104, \, \textit{5.58e42}, ... \\
+  ..., \textit{1.76e5}, \, 6249, \, 249, & \textbf{57}, & 1025, \, 2077, \, \textit{4.79e53}, ... \\
+  ..., \textit{4.23e7}, \, 7874, \, 374,& \textbf{58}, & \textit{6.55e4}, ... \\
+  ..., \textit{2.26e4}, \, 624, & \textbf{60}, & \textit{1.31e5}, ... \\
+  ..., \textit{5.52e4}, \, 2617, \, 593, \, 285, \, 161, & \textbf{61}, & 2049, \, \textit{3.28e5}, ... \\
+  ..., \textit{1.69e8}, \, 8084, \, 362, \, 98, & \textbf{70}, & \textit{5.24e5}, ... \\
+  ..., \textit{2.57e4}, \, 474, \, 524, \, 90, & \textbf{72}, & \textit{1.05e6}, ... \\
+  ..., \textit{2.09e4}, \, 4394, \, 449, \, 109, & \textbf{73}, & 4097, \, \textit{4.25e37}, ... \\
+  ..., \textit{1.44e4}, \, 485, \, 125, & \textbf{77}, & 133, \, \textit{5.24e5}, ... \\
+  ..., \textit{1.35e4}, \, 4374, \, 188, & \textbf{78}, & \textit{2.10e6}, ... \\
+  ..., \textit{1.57e4}, \, 713, \, 549, \, 153, & \textbf{81}, & 8193, \, \textit{1.80e16}, ... \\
+  ..., \textit{2.20e5}, \, 9746, \, 3086, \, 230, & \textbf{82}, & \textit{4.19e6}, ... \\
+  ..., \textit{1.10e4}, \, 360, \, 384, & \textbf{84}, & 132, \, 264, \, \textit{6.55e4}, ... \\
+  ..., \textit{4.57e4}, \, 1693, \, 209, & \textbf{85}, & \textit{1.64e4}, ... \\
+  ..., \textit{5.28e5}, \, 3624, \, 4124, \, 314, & \textbf{86}, & 1026, \, \textit{4.19e6}, ... \\
+  ..., \textit{1.89e5}, \, 5719, \, 1319, \, 599, \, 215, \, 119, & \textbf{87}, & 135, \, 519, \, 4119, \, \textit{1.07e9}, ... \\
+  ..., \textit{1.03e5}, \, 1274, \, 538, & \textbf{88}, & \textit{8.39e6}, ... \\
+  ..., \textit{1.06e6}, \, 3779, \, 699, \, 179, & \textbf{91}, & 1027, \, \textit{7.21e16}, ... \\
+  ..., \textit{8.89e4}, \, 874, & \textbf{92}, & 2050, \, \textit{4.61e18}, ... \\
+  ..., \textit{5.47e5}, \, 3429, \, 233, \, 269, & \textbf{93}, & \textit{3.28e5}, ... \\
+  ..., \textit{2.80e6}, \, 5914, \, 404, & \textbf{94}, & 260, \, 2054, \, \textit{1.72e10}, ... \\
+  ..., \textit{1.13e6}, \, 1000, \, 168, & \textbf{96}, & \textit{1.67e7}, ... \\
+  ..., \textit{1.14e4}, \, 604, & \textbf{100}, & \textit{3.35e7}, ... \\
+  \hline
+\end{tabular} \end{center}
+
+Note that certain orbits appear to exhibit supra-exponential growth, at least over the relatively short horizon rendered above. 
 
 \section{Conclusion}
 
