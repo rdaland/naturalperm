@@ -210,7 +210,7 @@ Note that this proof is designed for the base example presented earlier. It is a
 
 This section has defined displacement as the distance between an element and its image, and proposed that the limit behavior of maximum displacement (as input value grows) is a way to classify natperms. The maximum displacement is of course finite in finite natperms. Block cyclic natperms can be considered as an infinite product of finite permutations. If the block size is upper bounded, the maximum displacement is too; if not, it is conjectured that the maximum displacement scales linearly with the input (or less; but crucially, not supra-linearly). Shift-and-glue natperms can be considered as a finite product of permutations on countably nonfinite subsets of $\mathbb{N}$; here, too, the maximum distance is finite.
 
-These ``simple'' examples are constructed from familiar elements (finite blocks, finite permutations, the shift map, and some light gluing operations). This raises an interesting question: is it possible to construct a natperm which is essentially different from these simple examples? For example, can there be a natperm $\pi$ which is not in $\Theta(n)$ or $\Theta(1)$? Can a natperm be a product of a mix of orbits which belong to different classes?
+These ``simple'' examples are constructed from familiar elements (finite blocks, finite permutations, the shift map, and some light gluing operations). This raises an interesting question: is there a straightforward generator pattern for natperms which is essentially different from these simple examples? For example, what is needed to define a concrete natperm $\pi$ which is not in $\Theta(n)$ or $\Theta(1)$? Is there an easy way to define a natperm that is a product of finite and infinite orbits other than simple transformations of shift-and-glue natperms?
 
 \section{A natperm with nonlocal displacement}
 
@@ -237,7 +237,7 @@ It is well known that a natural number can be represented as a sum of all powers
 \end{equation}
 Define the binary encoder \texttt{benc} as mapping each natural number to the shortest such coefficient sequence (i.e. with no extraneous leading zeros), e.g. $\texttt{benc}(13) = \langle 1101 \rangle$.
 
-The binary decoder \texttt{bdec} is simply the inverse of \texttt{benc}. Note that standard computational implementations of \texttt{benc} allow extraneous leading zeros. Items like $\langle 01101 \rangle$ and $\langle 001101 \rangle$ would otherwise map to the same value as $\langle 1101 \rangle$ does (namely, 13). But allowing this would prevent invertibility. The exclusion of leading zeros in $\mathbb{B}$, and the restriction of \texttt{benc} to the shortest binary coefficient sequence, is all so that \texttt{benc} and \texttt{bdec} can be inverses.
+The binary decoder \texttt{bdec} is simply the inverse of \texttt{benc}. Note that standard computational implementations of \texttt{benc} allow extraneous leading zeros. Items like $\langle 01101 \rangle$ and $\langle 001101 \rangle$ would otherwise map to the same value as $\langle 1101 \rangle$ does (namely, 13). For the purposes of isomorphism, we require $13$ (and all other natural numbers) to have a unique correspondent in $\mathbb{B}$. This is achieved by excluding leading zeros; the definition that all nonempty strings to begin with $\langle 1 \rangle$ is simply a formal requirement for invertibility (and why the space is called \textit{canonical} binary strings).
 
 \subsection{Primefac Peano encoder/decoder}
 
@@ -258,7 +258,7 @@ Since the primes are enumerable and totally ordered by $<$, it is also possible 
 
 A classical method for representing positive integers is with a sequence of strokes; each stroke looks like the numeral $1$, and the number of strokes indicates the magnitude of the number. For example, $3 \rightarrow \langle 111 \rangle$. This paper will define the matchstick mapping $s : \mathbb{N}_0 \rightarrow \mathbb{B}_0$ as mapping a non-negative integer $n$ to a string consisting of $n$ copies of the symbol $1$. Note that $s(0) = \langle \rangle$. The Peano axioms define the natural numbers in a way that is closely related to the matchstick mapping.
 
-The matchstick mapping will be applied element-wise to multiplicity vectors. This will be represented overtly with an overline: $\overline{s} : \mathbb{N}_0^{*} \rightarrow \mathbb{B}_0^{*}$ is defined by $\overline{s}((n_1, n_2, \ldots, n_k)) = (s(n_1), s(n_2), \ldots, s(n_k))$.
+The matchstick mapping will be applied element-wise to multiplicity vectors, which is indicated with an overline: $\overline{s} : \mathbb{N}_0^{*} \rightarrow \mathbb{B}_0^{*}$ is defined by $\overline{s}((n_1, n_2, \ldots, n_k)) = (s(n_1), s(n_2), \ldots, s(n_k))$.
 
 \subsubsection{String joining}
 
@@ -292,7 +292,7 @@ It is straightforward to show that \texttt{penc} is 1-1: \begin{itemize}
 \end{itemize}
 
 
-To demonstrate invertibility, it is sufficient to show that \texttt{penc} is onto, i.e. an arbitrary element $b \in \mathbb{B}$ must have a preimage. Observe that $b = \langle 1 c_{k} c_{k-1} \cdots c_0 \rangle$, where each $c_i$ is either the delimiter $0$ or the matchstick $1$. If $b$ contains no zeros, it must be a string consisting of $k$ copies of $1$, where $k \geq 1$. In this case, $s^{-1}(b) = k$, and $2^k \geq 2$. Then $\sigma^{-1}(2^k) = 2^k - 1 \geq 1\in \mathbb{N}$. Otherwise, the split-by-$0$ operation (which is the inverse of the join-with-$0$ operation) must produce a sequence of strings of the form $\langle 1* \rangle$. This follows because $b$ can consist only of $1$s and $0$s, and each $0$ is a delimiter. The matchstick mapping is invertible, e.g. $s^{-1}(\langle \rangle) = 0$ and $s^{-1}$ applied to a sequence of $k$ $1$s is simply $k$. Then $\overline{s}^{-1}$ produces a sequence of integers, of which the leftmost must be nonzero, and all values must be nonnegative integers. In other words, $\overline{s}^{-1}$ yields a multiplicity vector. The leftmost entry corresponds to a prime $p > 2$, and its multiplicity must be greater than or equal to 1. Therefore, the product (the inverse of $p$) is well-defined and greater than 1. As a result, $\sigma^{-1}$ can be applied, yielding a value that is greater than or equal to 1. In other words, every value $b \in \mathbb{B}$ has a preimage under \texttt{penc}. Since \texttt{penc} is 1-1, this preimage is unique; in other words, $\texttt{pdec} = \texttt{penc}^{-1}$ is well-defined and \texttt{penc} is an encoder.
+To demonstrate invertibility, it is sufficient to show that \texttt{penc} is onto, i.e. an arbitrary element $b \in \mathbb{B}$ must have a preimage. Observe that $b = \langle 1 c_{k} c_{k-1} \cdots c_0 \rangle$, where each $c_i$ is either the delimiter $0$ or the matchstick $1$. If $b$ contains no zeros, it must be a string consisting of $k$ copies of $1$, where $k \geq 1$. In this case, $s^{-1}(b) = k$, and $2^k \geq 2$. Then $\sigma^{-1}(2^k) = 2^k - 1 \geq 1\in \mathbb{N}$. Otherwise, the split-by-$0$ operation (which is the inverse of the join-with-$0$ operation) must produce a sequence of strings, all either empty or of the form $\langle 1* \rangle$. This follows because $b$ can consist only of $1$s and $0$s, and each $0$ is a delimiter. The matchstick mapping is invertible, e.g. $s^{-1}(\langle \rangle) = 0$ and $s^{-1}$ applied to a sequence of $k$ $1$s is simply $k$. Then $\overline{s}^{-1}$ produces a sequence of integers, of which the leftmost must be nonzero, and all values must be nonnegative integers. In other words, $\overline{s}^{-1}$ yields a multiplicity vector. The leftmost entry corresponds to a prime $p > 2$, and its multiplicity must be greater than or equal to 1. Therefore, the product (the inverse of $p$) is well-defined and greater than 1. As a result, $\sigma^{-1}$ can be applied, yielding a value that is greater than or equal to 1. In other words, every value $b \in \mathbb{B}$ has a preimage under \texttt{penc}. Since \texttt{penc} is 1-1, this preimage is unique; in other words, $\texttt{pdec} = \texttt{penc}^{-1}$ is well-defined and \texttt{penc} is an encoder.
 
 \subsubsection{Encoder behavior demonstrated with selected examples}
 
@@ -305,7 +305,7 @@ This subsection illustrates the encoding/decoding for the first several natural 
                               & = & $(\bigoplus_0 \circ \, \overline{s}) (\, (1,) \, )) = \bigoplus_0 ( \, s(1), \,) = \bigoplus_0 ( \, \langle 1 \rangle, )$ \\
                               & = & $\langle 1 \rangle$ \\
   \\
-  $\texttt{penc}(2)$ & = & $(\bigoplus_0 \circ \, \overline{s} \circ p \circ \sigma) (2) = \bigoplus_0 \circ \, \overline{s} \circ primefac) (3)$ \\
+  $\texttt{penc}(2)$ & = & $(\bigoplus_0 \circ \, \overline{s} \circ p \circ \sigma) (2) = \bigoplus_0 \circ \, \overline{s} \circ p) (3)$ \\
                               & = & $\bigoplus_0 \circ \, \overline{s} (\, (1, 0) \, )) = \bigoplus_0 ( \langle 1 \rangle, \langle \rangle )$ \\
                               & = & $\langle 10 \rangle$ \\
   \\
@@ -337,7 +337,7 @@ with corresponding inverse $\psi^{-1}(n) = ( \texttt{pdec}  \circ \texttt{benc} 
 
 \section{Illustration and analysis of nonsimple natperm behavior}
 
-The following table represents the behavior of all cycles of $\psi$ which intersect the interval $ [ 1, 100 ] $. 
+The following table represents the behavior of all cycles of $\psi$ whose values are wholly contained within the interval $ [ 1, 100 ] $. 
 
 \begin{center} \begin{tabular}{|c|c|}
   \hline
@@ -363,7 +363,7 @@ The following table represents the behavior of all cycles of $\psi$ which inters
   \hline
 \end{tabular} \end{center}
 
-The next table represents all other orbits which intersect the interval $ [1, 100] $, sorted in ascending order of the smallest element which intersects the range (bolded). While not strictly monotonic, orbits tend to decrease until they intersect the range, and begin increasing soon thereafter. Orbits are deemed to ``escape'' when the image (or preimage) exceeds an arbitrary threshold of 10000; each row therefore takes the form of some preimage above the threshold, followed by a sequence of values below the threshold, followed by an image value above the threshold. For brevity, the above-threshold values at the beginning and end of each row are rendered in scientific notation.
+The next table represents all other orbits which intersect the interval $ [1, 100] $ but are not wholly contained within it. They are sorted in ascending order of the smallest element which intersects the range (bolded). Observe that orbits tend to decrease until they intersect the range, and begin increasing soon thereafter. Orbits are deemed to ``escape'' when the image (or preimage) exceeds an arbitrary threshold of 10000; each row therefore takes the form of some preimage above the threshold, followed by a sequence of values below the threshold, followed by an image value above the threshold. For brevity, the above-threshold values at the beginning and end of each row are rendered in scientific notation.
 
 \begin{center} \begin{tabular}{rcl}
   \hline
@@ -412,9 +412,11 @@ The next table represents all other orbits which intersect the interval $ [1, 10
 
 Note that certain orbits appear to exhibit supra-exponential growth over the relatively short horizon rendered above. For example, in the subsequence (94, 260, 2054, 1.72e10), the ratios of successive pairs are roughly (2.77, 7.90, 8.37e6). The general pattern is of successively increasing ratios (in both the forwards and backwards directions) from the local minimum. In short, the growth is locally supra-exponential.
 
+This paper will not investigate the natperm any further. However, several questions jump to mind as starting points for future investigation. How many orbits does this natperm have? Aside from the fixed points and 2-cycles, are most of the natural numbers contained in a single, infinitely long orbit? Are there additional k-cycles, beyond the 2-cycles already shown? If so, is there a recipe for identifying them (perhaps along the lines of a prime factorization)? Is the proposal to classify natperms by local displacement useful for further investigations (and if so, to what class does this natperm belong)?
+
 \section{Conclusion}
 
-This paper has presented several patterns for generating permutations on the natural numbers (natperms). Most of the patterns presented are derived from relatively simple operations with add-$k$ maps. Starting with `displacement' as the distance between an element and its image, this paper offered a classification of natperms, analogous to big-O notation for algorithms. It was shown here that some of these patterns are $\Theta(1)$, meaning the displacement is upper-bounded by a constant. And this paper conjectured that such patterns are at most $\Theta(n)$ (see body for technical exposition). Finally, this paper introduced a different method of generating a natperm. The starting point is the set of canonical binary strings $\mathbb{B}$, which is isomorphic to the natural numbers. Letting $f$ and $g$ be distinct isomorphisms (from $\mathbb{N}$ to $\mathbb{B}$), a natperm is obtained by composing $(g^{-1} \circ f)$. This paper provided two such isomorphisms, and briefly investigated the behavior of the resulting natperm. Though not definitive, this investigation strongly suggests the natperm is not $\Theta(1)$ or $\Theta(n)$, and instead exhibits supra-exponential growth.
+This paper has presented several patterns for generating permutations on the natural numbers (natperms). Most of the patterns presented are derived from relatively simple operations with add-$k$ maps. Starting with `displacement' as the distance between an element and its image, this paper offered a classification of natperms, analogous to big-O notation for algorithms. It was shown here that some of these patterns are $\Theta(1)$, meaning the displacement is upper-bounded by a constant. And this paper conjectured that natperms derived from all such generator patterns are at most $\Theta(n)$ (see body for technical exposition). Finally, this paper introduced a different method of generating a natperm. The starting point is the set of canonical binary strings $\mathbb{B}$, which is isomorphic to the natural numbers. Letting $f$ and $g$ be distinct isomorphisms (from $\mathbb{N}$ to $\mathbb{B}$), a natperm is obtained by composing $(g^{-1} \circ f)$. Using the binary representation as one encoding, and a string representation of the prime factorization as a distinct encoding, this paper obtained a natperm which clearly differs from the other, simpler generator patterns. For example, an orbit which passes through the first hundred natural numbers appears to exhibit supra-exponential growth. 
 
 \end{document}
 
